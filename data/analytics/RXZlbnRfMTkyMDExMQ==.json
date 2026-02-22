@@ -1,7 +1,7 @@
 {
   "event_id": "RXZlbnRfMTkyMDExMQ==",
-  "stats_total_leads": 296791,
-  "stats_badges_scanned": 0,
+  "stats_total_leads": 374950,
+  "stats_badges_scanned": 78159,
   "stats_business_cards_scanned": 1000,
   "stats_connections_made": 88783,
   "stats_connection_requests_sent": 25919,
@@ -29,6 +29,7 @@
     "exhibitors_view_filter": 27021,
     "exhibitor_bookmark_create": 12872,
     "connection_create": 88783,
+    "connection_create_scanned": 78159,
     "connection_request_create": 25919,
     "connection_request_update": 5386,
     "message_create": 13883,
@@ -51,7 +52,7 @@
     "contact_connection_create": 1000
   },
   "raw_count": 1671908,
-  "fetched_at": "2026-02-22T13:27:58.361942",
-  "time_gt": "2024-02-23T12:27:19.000Z",
+  "fetched_at": "2026-02-22T15:06:27.514831",
+  "time_gt": "2024-02-23T13:09:13.000Z",
   "time_lt": null
 }

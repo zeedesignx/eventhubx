@@ -1,7 +1,7 @@
 {
   "event_id": "RXZlbnRfMTg5NDI3NQ==",
-  "stats_total_leads": 5804,
-  "stats_badges_scanned": 0,
+  "stats_total_leads": 6172,
+  "stats_badges_scanned": 368,
   "stats_business_cards_scanned": 25,
   "stats_connections_made": 5329,
   "stats_connection_requests_sent": 11441,
@@ -18,6 +18,7 @@
     "event_advertisement_show": 15982,
     "exhibitor_show": 429,
     "connection_create": 5329,
+    "connection_create_scanned": 368,
     "people_view_filter": 2624,
     "people_view_search": 6747,
     "connection_request_create": 11441,
@@ -44,7 +45,7 @@
     "planning_stream_stop": 220
   },
   "raw_count": 173635,
-  "fetched_at": "2026-02-22T14:02:01.735996",
-  "time_gt": "2024-02-23T12:27:19.000Z",
+  "fetched_at": "2026-02-22T15:16:22.369444",
+  "time_gt": "2024-02-23T13:09:13.000Z",
   "time_lt": null
 }

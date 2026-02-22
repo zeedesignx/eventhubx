@@ -28,17 +28,25 @@ app = FastAPI(title="EventHubX API")
 BASE_DIR = Path(__file__).parent
 JS_DIR   = BASE_DIR / "js"
 CSS_DIR  = BASE_DIR / "css"
-IMG_CACHE_DIR = BASE_DIR / "img_cache"
-IMG_CACHE_DIR.mkdir(exist_ok=True)
-DATA_DIR = BASE_DIR / "data"
-DATA_DIR.mkdir(exist_ok=True)
-CHAT_SESSIONS_DIR = DATA_DIR / "chat_sessions"
-CHAT_SESSIONS_DIR.mkdir(exist_ok=True)
-SCREENSHOTS_DIR = IMG_CACHE_DIR / "screenshots"
-SCREENSHOTS_DIR.mkdir(exist_ok=True)
 
-AIRTABLE_CACHE_PATH = BASE_DIR / "airtable_data.json"
-SYNC_SETTINGS_PATH = BASE_DIR / "sync_settings.json"
+# In Vercel, we use /tmp for any writes, as the rest is read-only.
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+STORAGE_BASE = Path("/tmp") if IS_VERCEL else BASE_DIR
+
+IMG_CACHE_DIR = STORAGE_BASE / "img_cache"
+DATA_DIR = STORAGE_BASE / "data"
+CHAT_SESSIONS_DIR = DATA_DIR / "chat_sessions"
+SCREENSHOTS_DIR = IMG_CACHE_DIR / "screenshots"
+
+# Ensure directories exist (wrapped in try-except for read-only safety)
+for d in [IMG_CACHE_DIR, DATA_DIR, CHAT_SESSIONS_DIR, SCREENSHOTS_DIR]:
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        print(f"[Paths] Could not create {d}: {e}")
+
+AIRTABLE_CACHE_PATH = DATA_DIR / "airtable_data.json"
+SYNC_SETTINGS_PATH = DATA_DIR / "sync_settings.json"
 
 # ── Static Assets ──────────────────────────────────────────────────────────────
 if JS_DIR.is_dir():

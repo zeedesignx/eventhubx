@@ -16,9 +16,13 @@ except Exception: pass
 API_KEY = os.environ.get('SWAPCARD_API_KEY')
 URL = 'https://developer.swapcard.com/event-admin/graphql'
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+if os.environ.get("VERCEL") == "1":
+    DATA_DIR = "/tmp/data"
 
 if not os.path.exists(DATA_DIR):
-    os.makedirs(DATA_DIR)
+    try:
+        os.makedirs(DATA_DIR)
+    except Exception: pass
 
 # Community mapping is now dynamically resolved from get_events()
 

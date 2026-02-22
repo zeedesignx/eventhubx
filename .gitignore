@@ -25,3 +25,5 @@ leap_data_dump.json
 probe_output.json
 sync_settings.json
 *.sql
+.vercel
+.env*.local
