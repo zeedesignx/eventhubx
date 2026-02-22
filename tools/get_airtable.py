@@ -19,7 +19,7 @@ def _fetch_all(url_base, api_key):
     records = []
     offset = None
     while True:
-        params = {'pageSize': 100}
+        params: dict = {'pageSize': 100}
         if offset:
             params['offset'] = offset
         url = url_base + '?' + urllib.parse.urlencode(params)
