@@ -9,6 +9,8 @@ import json as _json
 import asyncio
 import mimetypes
 import httpx
+import uuid
+import base64
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from tools import get_airtable, get_events, get_subpages
