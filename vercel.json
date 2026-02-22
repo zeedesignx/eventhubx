@@ -1,21 +1,15 @@
 {
     "version": 2,
+    "functions": {
+        "main.py": {
+            "memory": 1024,
+            "maxDuration": 10
+        }
+    },
     "rewrites": [
         {
             "source": "/api/(.*)",
             "destination": "/main.py"
-        },
-        {
-            "source": "/js/(.*)",
-            "destination": "/js/$1"
-        },
-        {
-            "source": "/css/(.*)",
-            "destination": "/css/$1"
-        },
-        {
-            "source": "/img_cache/(.*)",
-            "destination": "/img_cache/$1"
         },
         {
             "source": "/(exhibitors|people|speakers|sessions|sponsors|events|settings|dashboard)",
