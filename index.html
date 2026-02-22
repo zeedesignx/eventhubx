@@ -963,8 +963,14 @@
                                 class="bg-[#1e2732] border border-slate-700/30 text-white text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary/50 outline-none min-w-[250px]">
                                 <option value="">Select an event...</option>
                             </select>
+                            <button onclick="openDashboardCustomizer()"
+                                class="size-10 bg-[#1e2732] border border-slate-700/30 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#252f3d] transition-all"
+                                title="Customize Dashboard">
+                                <span class="material-symbols-outlined text-[20px]">tune</span>
+                            </button>
                             <button onclick="refreshEventDashboard()"
-                                class="size-10 bg-[#1e2732] border border-slate-700/30 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#252f3d] transition-all">
+                                class="size-10 bg-[#1e2732] border border-slate-700/30 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#252f3d] transition-all"
+                                title="Refresh Dashboard">
                                 <span class="material-symbols-outlined text-[20px]">refresh</span>
                             </button>
                         </div>
@@ -988,109 +994,151 @@
 
                     <!-- Dashboard Grid (hidden by default) -->
                     <div id="event-dashboard-grid" class="hidden space-y-6">
-                        <!-- Stats Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <!-- Exhibitors Card -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Exhibitors</span>
-                                    <span class="material-symbols-outlined text-primary text-xl">storefront</span>
+                        <!-- Top Dashboard Panels (dynamically populated) -->
+                        <div id="dashboard-top-panels-container" class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        </div>
+
+                        <!-- Primary Stats Row (dynamically populated) -->
+                        <div id="primary-stats-container" class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        </div>
+
+                        <!-- Secondary Stats Row (dynamically populated) -->
+                        <div id="secondary-stats-container" class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        </div>
+
+                        <!-- Lead Breakdown Stats (dynamically populated) -->
+                        <div id="lead-breakdown-container" class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                        </div>
+
+                        <!-- Bottom Dashboard Panels (dynamically populated) -->
+                        <div id="dashboard-bottom-panels-container" class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Customizer Modal -->
+                <div id="dashboard-customizer-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                    <div class="bg-[#1a2332] border border-slate-700/50 rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden shadow-2xl">
+                        <!-- Modal Header -->
+                        <div class="px-5 py-3 border-b border-slate-700/30 flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold text-white">Customize Dashboard</h2>
+                                <p class="text-xs text-slate-400 mt-0.5">Toggle visibility and reorder metrics</p>
+                            </div>
+                            <button onclick="closeDashboardCustomizer()" class="size-7 rounded-lg hover:bg-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="p-5 overflow-y-auto max-h-[calc(85vh-140px)]">
+                            <!-- Saved Views Section -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Saved Views</h3>
+                                    <button onclick="saveCurrentView()" class="px-2.5 py-1 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px]">save</span>
+                                        Save View
+                                    </button>
                                 </div>
-                                <div class="text-3xl font-black text-white" id="ed-exhibitors-count">0</div>
-                                <div class="text-xs text-slate-500 mt-2">Total registered</div>
+                                <div id="saved-views-list" class="flex flex-wrap gap-1.5">
+                                    <!-- Populated by JS -->
+                                </div>
                             </div>
 
-                            <!-- Leads Card -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Leads</span>
-                                    <span class="material-symbols-outlined text-emerald-400 text-xl">trending_up</span>
+                            <!-- Top Panels (First Position) -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Top Panels</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="changeSectionSize('topPanels', 'small')" id="topPanels-size-small" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Small">S</button>
+                                        <button onclick="changeSectionSize('topPanels', 'medium')" id="topPanels-size-medium" class="size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all" title="Medium">M</button>
+                                        <button onclick="changeSectionSize('topPanels', 'large')" id="topPanels-size-large" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Large">L</button>
+                                    </div>
                                 </div>
-                                <div class="text-3xl font-black text-white" id="ed-leads-count">0</div>
-                                <div class="text-xs text-slate-500 mt-2">Captured leads</div>
+                                <div id="top-panels-customizer" class="space-y-1.5 min-h-[60px] p-2 rounded-lg border border-slate-700/30 transition-all">
+                                    <!-- Populated by JS -->
+                                </div>
                             </div>
 
-                            <!-- Speakers Card -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Speakers</span>
-                                    <span class="material-symbols-outlined text-blue-400 text-xl">podium</span>
+                            <!-- Primary Stats -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Primary Stats</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="changeSectionSize('primary', 'small')" id="primary-size-small" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Small">S</button>
+                                        <button onclick="changeSectionSize('primary', 'medium')" id="primary-size-medium" class="size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all" title="Medium">M</button>
+                                        <button onclick="changeSectionSize('primary', 'large')" id="primary-size-large" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Large">L</button>
+                                    </div>
                                 </div>
-                                <div class="text-3xl font-black text-white" id="ed-speakers-count">0</div>
-                                <div class="text-xs text-slate-500 mt-2" id="ed-speakers-subtitle">Active speakers</div>
+                                <div id="primary-stats-customizer" class="space-y-1.5 min-h-[60px] p-2 rounded-lg border border-slate-700/30 transition-all">
+                                    <!-- Populated by JS -->
+                                </div>
                             </div>
 
-                            <!-- Sponsors Card -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Sponsors</span>
-                                    <span class="material-symbols-outlined text-amber-400 text-xl">handshake</span>
+                            <!-- Secondary Stats -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Secondary Stats</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="changeSectionSize('secondary', 'small')" id="secondary-size-small" class="size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all" title="Small">S</button>
+                                        <button onclick="changeSectionSize('secondary', 'medium')" id="secondary-size-medium" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Medium">M</button>
+                                        <button onclick="changeSectionSize('secondary', 'large')" id="secondary-size-large" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Large">L</button>
+                                    </div>
                                 </div>
-                                <div class="text-3xl font-black text-white" id="ed-sponsors-count">0</div>
-                                <div class="text-xs text-slate-500 mt-2">Active sponsors</div>
+                                <div id="secondary-stats-customizer" class="space-y-1.5 min-h-[60px] p-2 rounded-lg border border-slate-700/30 transition-all">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Lead Breakdown -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lead Breakdown</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="changeSectionSize('leadBreakdown', 'small')" id="leadBreakdown-size-small" class="size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all" title="Small">S</button>
+                                        <button onclick="changeSectionSize('leadBreakdown', 'medium')" id="leadBreakdown-size-medium" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Medium">M</button>
+                                        <button onclick="changeSectionSize('leadBreakdown', 'large')" id="leadBreakdown-size-large" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Large">L</button>
+                                    </div>
+                                </div>
+                                <div id="lead-breakdown-customizer" class="space-y-1.5 min-h-[60px] p-2 rounded-lg border border-slate-700/30 transition-all">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Bottom Panels (Last Position) -->
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Bottom Panels</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="changeSectionSize('bottomPanels', 'small')" id="bottomPanels-size-small" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Small">S</button>
+                                        <button onclick="changeSectionSize('bottomPanels', 'medium')" id="bottomPanels-size-medium" class="size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all" title="Medium">M</button>
+                                        <button onclick="changeSectionSize('bottomPanels', 'large')" id="bottomPanels-size-large" class="size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all" title="Large">L</button>
+                                    </div>
+                                </div>
+                                <div id="bottom-panels-customizer" class="space-y-1.5 min-h-[60px] p-2 rounded-lg border border-slate-700/30 transition-all">
+                                    <!-- Populated by JS -->
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Three Column Grid matching mockup -->
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Left Panel - Top Exhibitors -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
-                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary">emoji_events</span>
-                                    Top Exhibitors
-                                </h3>
-                                <div id="ed-top-exhibitors" class="space-y-3">
-                                    <!-- Populated by JS -->
-                                    <div class="text-center py-8 text-slate-600">
-                                        <span class="material-symbols-outlined text-4xl mb-2">storefront</span>
-                                        <p class="text-sm">No exhibitor data available</p>
-                                    </div>
-                                </div>
+                        <!-- Modal Footer -->
+                        <div class="px-5 py-3 border-t border-slate-700/30 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <button onclick="resetDashboardToDefault()" class="px-3 py-1.5 bg-slate-700/30 hover:bg-slate-700/50 text-slate-300 rounded-lg text-xs font-bold transition-all">
+                                    Reset to Default
+                                </button>
+                                <button onclick="resetAllFields()" class="px-3 py-1.5 bg-slate-700/30 hover:bg-slate-700/50 text-slate-300 rounded-lg text-xs font-bold transition-all">
+                                    Reset All Fields
+                                </button>
                             </div>
-
-                            <!-- Center Panel - Event Stats Summary -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6 flex flex-col">
-                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-emerald-400">analytics</span>
-                                    Event Overview
-                                </h3>
-                                <div class="flex-1 flex flex-col justify-center space-y-4">
-                                    <div class="p-4 rounded-xl bg-slate-800/20 border border-slate-700/20">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-xs text-slate-400 uppercase tracking-wider">Attendance Rate</span>
-                                            <span class="text-lg font-bold text-emerald-400" id="ed-attendance-rate">0%</span>
-                                        </div>
-                                        <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                            <div id="ed-attendance-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div class="p-3 rounded-xl bg-slate-800/20">
-                                            <div class="text-xs text-slate-400 mb-1">Sessions</div>
-                                            <div class="text-2xl font-bold text-white" id="ed-sessions-count">0</div>
-                                        </div>
-                                        <div class="p-3 rounded-xl bg-slate-800/20">
-                                            <div class="text-xs text-slate-400 mb-1">Attendees</div>
-                                            <div class="text-2xl font-bold text-white" id="ed-attendees-count">0</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Panel - Recent Activity -->
-                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
-                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-amber-400">schedule</span>
-                                    Recent Activity
-                                </h3>
-                                <div id="ed-activity-feed" class="space-y-3">
-                                    <!-- Populated by JS -->
-                                    <div class="text-center py-8 text-slate-600">
-                                        <span class="material-symbols-outlined text-4xl mb-2">history</span>
-                                        <p class="text-sm">No recent activity</p>
-                                    </div>
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="closeDashboardCustomizer()" class="px-3 py-1.5 bg-slate-700/30 hover:bg-slate-700/50 text-slate-300 rounded-lg text-xs font-bold transition-all">
+                                    Cancel
+                                </button>
+                                <button onclick="applyDashboardCustomization()" class="px-3 py-1.5 bg-primary hover:bg-primary/80 text-white rounded-lg text-xs font-bold transition-all">
+                                    Apply & Close
+                                </button>
                             </div>
                         </div>
                     </div>

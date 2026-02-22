@@ -1114,6 +1114,7 @@ Be concise, helpful, and specific to SwapcardOS functionality."""
 @app.get("/sessions", response_class=HTMLResponse)
 @app.get("/sponsors", response_class=HTMLResponse)
 @app.get("/events", response_class=HTMLResponse)
+@app.get("/event-dashboard", response_class=HTMLResponse)
 @app.get("/settings", response_class=HTMLResponse)
 @app.get("/dashboard", response_class=HTMLResponse)
 @app.get("/", response_class=HTMLResponse)

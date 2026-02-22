@@ -714,24 +714,55 @@ loadAirtableLogoCache();
 let currentEventDashboardId = null;
 
 // Initialize event dashboard when switching to that view
-function initEventDashboard() {
+async function initEventDashboard() {
+    console.log('[EventDashboard] Initializing dashboard');
+
+    // Load saved configuration
+    currentDashboardConfig = loadDashboardConfig();
+    console.log('[EventDashboard] Loaded config:', currentDashboardConfig);
+
+    // Ensure events data is loaded
+    if (!window.allEventsData || Object.keys(window.allEventsData).length === 0) {
+        console.log('[EventDashboard] Events data not loaded, fetching...');
+        try {
+            // Call the global loadEvents function from events.js
+            if (typeof loadEvents === 'function') {
+                await loadEvents();
+                console.log('[EventDashboard] Events loaded:', Object.keys(window.allEventsData || {}).length, 'tabs');
+            } else {
+                console.error('[EventDashboard] loadEvents function not found');
+            }
+        } catch (error) {
+            console.error('[EventDashboard] Failed to load events:', error);
+        }
+    } else {
+        console.log('[EventDashboard] Events already loaded:', Object.keys(window.allEventsData).length, 'tabs');
+    }
+
     // Populate event selector
     populateEventDashboardSelector();
 }
 
 function populateEventDashboardSelector() {
     const selector = document.getElementById('event-dashboard-selector');
-    if (!selector) return;
+    if (!selector) {
+        console.error('[EventDashboard] Selector element not found');
+        return;
+    }
 
     // Get all events from allEventsData (organized by tabs)
     if (!window.allEventsData) {
+        console.warn('[EventDashboard] window.allEventsData not available');
         selector.innerHTML = '<option value="">No events available</option>';
         return;
     }
 
+    console.log('[EventDashboard] Populating selector from allEventsData:', Object.keys(window.allEventsData));
+
     // Flatten all events from all tabs
     const allEvents = [];
-    Object.values(window.allEventsData).forEach(tabEvents => {
+    Object.entries(window.allEventsData).forEach(([tabName, tabEvents]) => {
+        console.log(`[EventDashboard] Tab "${tabName}":`, Array.isArray(tabEvents) ? `${tabEvents.length} events` : 'not an array');
         if (Array.isArray(tabEvents)) {
             tabEvents.forEach(evt => {
                 // Avoid duplicates
@@ -741,6 +772,8 @@ function populateEventDashboardSelector() {
             });
         }
     });
+
+    console.log(`[EventDashboard] Total unique events found: ${allEvents.length}`);
 
     if (allEvents.length === 0) {
         selector.innerHTML = '<option value="">No events available</option>';
@@ -758,10 +791,17 @@ function populateEventDashboardSelector() {
         allEvents.map(evt =>
             `<option value="${evt.id}">${evt.eventName || evt.title || evt.name || 'Unnamed Event'}</option>`
         ).join('');
+
+    console.log('[EventDashboard] Selector populated with', allEvents.length, 'events');
 }
 
 async function loadEventDashboard() {
     const selector = document.getElementById('event-dashboard-selector');
+    if (!selector) {
+        console.error('[EventDashboard] Selector not found');
+        return;
+    }
+
     const eventId = selector.value;
 
     console.log('[EventDashboard] Loading dashboard for event:', eventId);
@@ -776,18 +816,24 @@ async function loadEventDashboard() {
     // Find the event data from allEventsData
     let event = null;
     if (window.allEventsData) {
+        console.log('[EventDashboard] Searching through allEventsData tabs:', Object.keys(window.allEventsData));
         for (let tab in window.allEventsData) {
-            const found = window.allEventsData[tab].find(e => e.id === eventId);
-            if (found) {
-                event = found;
-                console.log('[EventDashboard] Found event:', event);
-                break;
+            const tabEvents = window.allEventsData[tab];
+            if (Array.isArray(tabEvents)) {
+                const found = tabEvents.find(e => e.id === eventId);
+                if (found) {
+                    event = found;
+                    console.log('[EventDashboard] Found event in tab:', tab, event);
+                    break;
+                }
             }
         }
+    } else {
+        console.error('[EventDashboard] window.allEventsData not available');
     }
 
     if (!event) {
-        console.error('[EventDashboard] Event not found:', eventId);
+        console.error('[EventDashboard] Event not found for ID:', eventId);
         showEventDashboardEmpty();
         return;
     }
@@ -801,62 +847,124 @@ async function loadEventDashboard() {
     document.getElementById('event-dashboard-empty').classList.add('hidden');
     document.getElementById('event-dashboard-grid').classList.remove('hidden');
 
+    // Apply dashboard customization
+    renderDashboardWithConfig();
+
     // Calculate and display metrics (await the async function)
-    await updateEventDashboardMetrics(event);
+    try {
+        await updateEventDashboardMetrics(event);
+    } catch (error) {
+        console.error('[EventDashboard] Error updating metrics:', error);
+    }
 }
 
 async function updateEventDashboardMetrics(event) {
     console.log('[EventDashboard] Loading metrics for event:', event.id);
 
-    // Load event-specific data using ensureEventSubpageData
-    const exhibitors = await ensureEventSubpageData(event.id, 'exhibitors');
-    const speakers = await ensureEventSubpageData(event.id, 'people');
-    const sponsors = await ensureEventSubpageData(event.id, 'sponsors');
-    const sessions = await ensureEventSubpageData(event.id, 'sessions');
+    // Use the same data source as the Events module: window.allSubpagesStats
+    const stats = (window.allSubpagesStats && window.allSubpagesStats[event.id]) || {};
 
-    console.log('[EventDashboard] Data loaded:', {
-        exhibitors: exhibitors.length,
-        speakers: speakers.length,
-        sponsors: sponsors.length,
-        sessions: sessions.length
+    console.log('[EventDashboard] Stats from allSubpagesStats:', stats);
+
+    // Extract all metrics from stats (same as Events module)
+    const exhibitorsCount = stats.exhibitorCount || 0;
+    const speakersCount = stats.personCount || 0;
+    const sponsorsCount = stats.sponsorsCount || 0;
+    const sessionsCount = stats.sessionsCount || 0;
+    const membersCount = stats.membersCount || 0;
+    const leadsCount = stats.leadsCount || 0;
+
+    // Lead breakdown (from analytics columns)
+    const totalLeads = stats.stats_total_leads || 0;
+    const leadBookmarks = stats.stats_exhibitor_bookmarks || 0;
+    const leadConnections = stats.stats_connections_made || 0;
+    const leadScans = stats.stats_badges_scanned || 0;
+    const leadContacts = stats.stats_business_cards_scanned || 0;
+    const leadRequests = stats.stats_connection_requests_sent || 0;
+    const leadMessages = stats.stats_messages_exchanged || 0;
+    const leadMeetings = stats.stats_meetings_created || 0;
+    const leadViews = stats.stats_exhibitor_views || 0;
+
+    // Event-level metrics from event object
+    const totalRegistrations = event.registrations_count || event.totalRegistrations || event.registrations || 0;
+    const totalAttendees = event.totalAttendees || event.attendees || 0;
+
+    // Booth count - try to get from event data
+    const totalBooths = event.totalBooths || exhibitorsCount; // Fallback to exhibitor count
+
+    console.log('[EventDashboard] Extracted metrics:', {
+        exhibitorsCount,
+        speakersCount,
+        sponsorsCount,
+        sessionsCount,
+        membersCount,
+        totalLeads,
+        leadScans,
+        leadViews,
+        leadContacts,
+        leadMeetings,
+        totalRegistrations,
+        totalAttendees
     });
 
-    // Log first exhibitor to see structure
-    if (exhibitors.length > 0) {
-        console.log('[EventDashboard] Sample exhibitor:', exhibitors[0]);
-    }
-
-    // Calculate total leads
-    const totalLeads = exhibitors.reduce((sum, ex) => {
-        const leads = parseInt(ex.leads || ex.numberOfLeads || ex.lead_count || 0);
-        return sum + leads;
-    }, 0);
-
-    console.log('[EventDashboard] Total leads calculated:', totalLeads);
-
-    // Update stats cards
-    animateEventDashboardNumber('ed-exhibitors-count', exhibitors.length);
+    // Update primary stats (4 main cards)
+    animateEventDashboardNumber('ed-exhibitors-count', exhibitorsCount);
     animateEventDashboardNumber('ed-leads-count', totalLeads);
-    animateEventDashboardNumber('ed-speakers-count', speakers.length);
-    animateEventDashboardNumber('ed-sponsors-count', sponsors.length);
-    animateEventDashboardNumber('ed-sessions-count', sessions.length);
-    animateEventDashboardNumber('ed-attendees-count', event.totalRegistrations || event.registrations || 0);
+    animateEventDashboardNumber('ed-speakers-count', speakersCount);
+    animateEventDashboardNumber('ed-sponsors-count', sponsorsCount);
 
-    // Update attendance rate
-    const totalRegs = event.totalRegistrations || event.registrations || 0;
-    const totalAtt = event.totalAttendees || event.attendees || 0;
-    const attendanceRate = totalRegs ? Math.round((totalAtt / totalRegs) * 100) || 0 : 0;
-    document.getElementById('ed-attendance-rate').textContent = attendanceRate + '%';
-    document.getElementById('ed-attendance-bar').style.width = attendanceRate + '%';
+    // Update secondary stats (6 cards)
+    animateEventDashboardNumber('ed-attendees-count', totalAttendees);
+    animateEventDashboardNumber('ed-sessions-count', sessionsCount);
+    animateEventDashboardNumber('ed-registrations-count', totalRegistrations);
+    animateEventDashboardNumber('ed-booths-count', totalBooths);
+    animateEventDashboardNumber('ed-members-count', membersCount);
+    animateEventDashboardNumber('ed-views-count', leadViews);
+
+    // Update lead breakdown stats (4 gradient cards)
+    animateEventDashboardNumber('ed-scans-count', leadScans);
+    animateEventDashboardNumber('ed-lead-views-count', leadViews);
+    animateEventDashboardNumber('ed-contacts-count', leadContacts);
+    animateEventDashboardNumber('ed-meetings-count', leadMeetings);
+
+    // Update top panels: Active Users and Total Leads
+    // Active Users calculation (based on attendees who have activity)
+    const activeUsersCount = totalAttendees; // For now, using attendees as active users
+    const totalUsersCount = totalRegistrations;
+    const activeUsersPercent = totalUsersCount ? Math.round((activeUsersCount / totalUsersCount) * 100) || 0 : 0;
+
+    animateEventDashboardNumber('ed-active-users-count', activeUsersCount);
+    const activeUsersPercentEl = document.getElementById('ed-active-users-percent');
+    const activeUsersBarEl = document.getElementById('ed-active-users-bar');
+    if (activeUsersPercentEl) activeUsersPercentEl.textContent = activeUsersPercent + '%';
+    if (activeUsersBarEl) activeUsersBarEl.style.width = activeUsersPercent + '%';
+
+    // Total Leads
+    animateEventDashboardNumber('ed-total-leads-count', totalLeads);
+
+    // Update attendance rate (legacy - if still used elsewhere)
+    const attendanceRate = totalRegistrations ? Math.round((totalAttendees / totalRegistrations) * 100) || 0 : 0;
+    const attendanceRateEl = document.getElementById('ed-attendance-rate');
+    const attendanceBarEl = document.getElementById('ed-attendance-bar');
+    if (attendanceRateEl) attendanceRateEl.textContent = attendanceRate + '%';
+    if (attendanceBarEl) attendanceBarEl.style.width = attendanceRate + '%';
 
     // Update speakers subtitle
-    document.getElementById('ed-speakers-subtitle').textContent = `${sessions.length} sessions scheduled`;
+    const speakersSubtitle = document.getElementById('ed-speakers-subtitle');
+    if (speakersSubtitle) speakersSubtitle.textContent = `${sessionsCount} sessions scheduled`;
+
+    // Load detailed exhibitor data for top exhibitors list
+    let exhibitors = [];
+    if (typeof ensureEventSubpageData === 'function') {
+        exhibitors = await ensureEventSubpageData(event.id, 'exhibitors') || [];
+        console.log('[EventDashboard] Loaded', exhibitors.length, 'exhibitors for top list');
+    }
 
     // Update top exhibitors
     updateEventDashboardTopExhibitors(exhibitors);
 
-    // Update activity feed
-    updateEventDashboardActivity(event, exhibitors, speakers);
+    // Update activity feed with stats
+    updateEventDashboardActivity(event, stats, exhibitors);
 
     console.log('[EventDashboard] Metrics updated successfully');
 }
@@ -889,10 +997,21 @@ function updateEventDashboardTopExhibitors(exhibitors) {
 
     // Sort by leads and take top 5
     const topExhibitors = exhibitors
-        .map(ex => ({
-            ...ex,
-            leadsCount: parseInt(ex.leads || ex.numberOfLeads || ex.lead_count || 0)
-        }))
+        .map(ex => {
+            // Calculate leads the same way as Events module
+            const leads = ex.withEvent?.leads || ex.leads || {};
+            const scans = leads.scans?.totalCount || leads.scans || 0;
+            const views = leads.views?.totalCount || leads.views || 0;
+            const contacts = leads.contacts?.totalCount || leads.contacts || 0;
+            const meetings = leads.meetings?.totalCount || leads.meetings || 0;
+            const bookmarks = leads.bookmarks?.totalCount || leads.bookmarks || 0;
+            const leadsCount = parseInt(scans) + parseInt(views) + parseInt(contacts) + parseInt(meetings) + parseInt(bookmarks);
+
+            return {
+                ...ex,
+                leadsCount: leadsCount
+            };
+        })
         .sort((a, b) => b.leadsCount - a.leadsCount)
         .slice(0, 5);
 
@@ -1007,19 +1126,1012 @@ function showEventDashboardEmpty() {
 
 async function refreshEventDashboard() {
     console.log('[EventDashboard] Refresh button clicked');
-    if (currentEventDashboardId) {
-        // Clear the cache for this event to force fresh data
-        if (window.eventSubpagesCache && window.eventSubpagesCache[currentEventDashboardId]) {
+
+    if (!currentEventDashboardId) {
+        console.warn('[EventDashboard] No event selected to refresh');
+        return;
+    }
+
+    console.log('[EventDashboard] Refreshing dashboard for event:', currentEventDashboardId);
+
+    // Clear the cache for this event to force fresh data
+    if (window.eventSubpagesCache) {
+        if (window.eventSubpagesCache[currentEventDashboardId]) {
             delete window.eventSubpagesCache[currentEventDashboardId];
             console.log('[EventDashboard] Cleared cache for event:', currentEventDashboardId);
         }
-
-        // Reload the dashboard
-        await loadEventDashboard();
-        console.log('[EventDashboard] Dashboard refreshed');
     } else {
-        console.log('[EventDashboard] No event selected to refresh');
+        console.warn('[EventDashboard] eventSubpagesCache not initialized');
     }
+
+    // Reload the dashboard
+    try {
+        await loadEventDashboard();
+        console.log('[EventDashboard] Dashboard refreshed successfully');
+    } catch (error) {
+        console.error('[EventDashboard] Error refreshing dashboard:', error);
+    }
+}
+
+// ── Dashboard Customization ──────────────────────────────────────────────────
+
+// Stat descriptions mapping
+const statDescriptions = {
+    'exhibitors': 'Total registered',
+    'leads': 'Captured leads',
+    'speakers': 'Active speakers',
+    'sponsors': 'Active sponsors',
+    'attendees': 'Total attendees',
+    'sessions': 'Event sessions',
+    'registrations': 'Total registrations',
+    'booths': 'Exhibition booths',
+    'members': 'Community members',
+    'views': 'Profile views',
+    'scans': 'Lead scans',
+    'lead-views': 'Profile views',
+    'contacts': 'Contact exchanges',
+    'meetings': 'Scheduled meetings',
+    'top-exhibitors': 'Top performing exhibitors',
+    'event-overview': 'Event metrics summary',
+    'recent-activity': 'Latest activity feed'
+};
+
+// Render dashboard cards dynamically based on configuration
+function renderDashboardCards() {
+    console.log('[Dashboard] === renderDashboardCards START ===');
+    console.log('[Dashboard] Config:', JSON.stringify(currentDashboardConfig, null, 2));
+
+    // Render primary stats
+    const primaryContainer = document.getElementById('primary-stats-container');
+    console.log('[Dashboard] Primary container found:', !!primaryContainer);
+
+    if (primaryContainer) {
+        const visiblePrimaryStats = currentDashboardConfig.primaryStats.filter(stat => stat.visible);
+        console.log('[Dashboard] Rendering', visiblePrimaryStats.length, 'primary stats:', visiblePrimaryStats.map(s => s.label));
+
+        primaryContainer.innerHTML = visiblePrimaryStats
+            .map(stat => {
+                const size = stat.size || 'medium';
+                const sizeClasses = {
+                    small: 'p-3',
+                    medium: 'p-5',
+                    large: 'p-7'
+                };
+                const textSizeClasses = {
+                    small: 'text-xl',
+                    medium: 'text-3xl',
+                    large: 'text-4xl'
+                };
+                return `
+                <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 ${sizeClasses[size]} hover:border-slate-600/50 transition-all">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">${stat.label}</span>
+                        <span class="material-symbols-outlined text-${stat.color} text-xl">${stat.icon}</span>
+                    </div>
+                    <div class="${textSizeClasses[size]} font-black text-white" id="ed-${stat.id}-count">0</div>
+                    <div class="text-xs text-slate-500 mt-2" id="ed-${stat.id}-subtitle">${statDescriptions[stat.id] || ''}</div>
+                </div>
+                `;
+            }).join('');
+    }
+
+    // Render secondary stats
+    const secondaryContainer = document.getElementById('secondary-stats-container');
+    console.log('[Dashboard] Secondary container found:', !!secondaryContainer);
+
+    if (secondaryContainer) {
+        const visibleSecondaryStats = currentDashboardConfig.secondaryStats.filter(stat => stat.visible);
+        console.log('[Dashboard] Rendering', visibleSecondaryStats.length, 'secondary stats:', visibleSecondaryStats.map(s => s.label));
+
+        secondaryContainer.innerHTML = visibleSecondaryStats
+            .map(stat => {
+                const size = stat.size || 'small';
+                const sizeClasses = {
+                    small: 'p-3',
+                    medium: 'p-4',
+                    large: 'p-6'
+                };
+                const textSizeClasses = {
+                    small: 'text-xl',
+                    medium: 'text-2xl',
+                    large: 'text-3xl'
+                };
+                return `
+                <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 ${sizeClasses[size]}">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-${stat.color} text-lg">${stat.icon}</span>
+                        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">${stat.label}</span>
+                    </div>
+                    <div class="${textSizeClasses[size]} font-black text-white" id="ed-${stat.id}-count">0</div>
+                    <div class="text-xs text-slate-500 mt-1">${statDescriptions[stat.id] || ''}</div>
+                </div>
+                `;
+            }).join('');
+    }
+
+    // Render lead breakdown stats
+    const leadBreakdownContainer = document.getElementById('lead-breakdown-container');
+    console.log('[Dashboard] Lead breakdown container found:', !!leadBreakdownContainer);
+
+    if (leadBreakdownContainer) {
+        const colorMap = {
+            'primary': 'from-primary/10 to-primary/5 border-primary/20',
+            'emerald-400': 'from-emerald-500/10 to-emerald-600/5 border-emerald-500/20',
+            'blue-400': 'from-blue-500/10 to-blue-600/5 border-blue-500/20',
+            'purple-400': 'from-purple-500/10 to-purple-600/5 border-purple-500/20',
+            'amber-400': 'from-amber-500/10 to-amber-600/5 border-amber-500/20',
+            'cyan-400': 'from-cyan-500/10 to-cyan-600/5 border-cyan-500/20',
+            'rose-400': 'from-rose-500/10 to-rose-600/5 border-rose-500/20',
+            'indigo-400': 'from-indigo-500/10 to-indigo-600/5 border-indigo-500/20',
+            'teal-400': 'from-teal-500/10 to-teal-600/5 border-teal-500/20',
+            'orange-400': 'from-orange-500/10 to-orange-600/5 border-orange-500/20'
+        };
+
+        const visibleLeadStats = currentDashboardConfig.leadBreakdown.filter(stat => stat.visible);
+        console.log('[Dashboard] Rendering', visibleLeadStats.length, 'lead breakdown stats:', visibleLeadStats.map(s => s.label));
+
+        leadBreakdownContainer.innerHTML = visibleLeadStats
+            .map(stat => {
+                const size = stat.size || 'small';
+                const sizeClasses = {
+                    small: 'p-3',
+                    medium: 'p-4',
+                    large: 'p-6'
+                };
+                const textSizeClasses = {
+                    small: 'text-xl',
+                    medium: 'text-2xl',
+                    large: 'text-3xl'
+                };
+                return `
+                <div class="bg-gradient-to-br ${colorMap[stat.color] || 'from-slate-500/10 to-slate-600/5 border-slate-500/20'} backdrop-blur-sm rounded-2xl border ${sizeClasses[size]}">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-${stat.color} text-lg">${stat.icon}</span>
+                        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">${stat.label}</span>
+                    </div>
+                    <div class="${textSizeClasses[size]} font-black text-${stat.color}" id="ed-${stat.id}-count">0</div>
+                    <div class="text-xs text-slate-500 mt-1">${statDescriptions[stat.id] || ''}</div>
+                </div>
+                `;
+            }).join('');
+    }
+
+    // Render top dashboard panels (Event Overview only)
+    const topPanelsContainer = document.getElementById('dashboard-top-panels-container');
+    const bottomPanelsContainer = document.getElementById('dashboard-bottom-panels-container');
+    console.log('[Dashboard] Top panels container found:', !!topPanelsContainer);
+    console.log('[Dashboard] Bottom panels container found:', !!bottomPanelsContainer);
+
+    // Ensure topPanels and bottomPanels exist
+    if (!currentDashboardConfig.topPanels) {
+        currentDashboardConfig.topPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.topPanels));
+    }
+    if (!currentDashboardConfig.bottomPanels) {
+        currentDashboardConfig.bottomPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.bottomPanels));
+    }
+
+    const visibleTopPanels = currentDashboardConfig.topPanels.filter(panel => panel.visible);
+    const visibleBottomPanels = currentDashboardConfig.bottomPanels.filter(panel => panel.visible);
+    console.log('[Dashboard] Rendering', visibleTopPanels.length, 'top panels:', visibleTopPanels.map(p => p.label));
+    console.log('[Dashboard] Rendering', visibleBottomPanels.length, 'bottom panels:', visibleBottomPanels.map(p => p.label));
+
+    // Render Event Overview in top container (Active Users + Total Leads)
+    if (topPanelsContainer) {
+        const eventOverviewPanel = visibleTopPanels.find(p => p.id === 'event-overview');
+        if (eventOverviewPanel) {
+            topPanelsContainer.innerHTML = `
+                <!-- Active Users Card -->
+                <div class="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 backdrop-blur-sm rounded-2xl border border-emerald-500/20 p-6 hover:border-emerald-500/40 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                            <span class="material-symbols-outlined text-[20px]">person_check</span>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Live</span>
+                    </div>
+                    <p class="text-slate-400 text-xs font-medium mb-0.5 uppercase tracking-wider">Active Users</p>
+                    <div class="flex items-baseline gap-2 mb-3">
+                        <h3 id="ed-active-users-count" class="text-3xl font-bold text-white tracking-tight">0</h3>
+                        <span class="text-emerald-400 text-sm font-semibold" id="ed-active-users-percent">0%</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">Engagement Rate</div>
+                    <div class="h-2 bg-slate-800/50 rounded-full overflow-hidden">
+                        <div id="ed-active-users-bar" class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Total Leads Card -->
+                <div class="bg-gradient-to-br from-rose-500/10 to-rose-600/5 backdrop-blur-sm rounded-2xl border border-rose-500/20 p-6 hover:border-rose-500/40 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+                            <span class="material-symbols-outlined text-[20px]">monitoring</span>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">All Time</span>
+                    </div>
+                    <p class="text-slate-400 text-xs font-medium mb-0.5 uppercase tracking-wider">Total Leads</p>
+                    <h3 id="ed-total-leads-count" class="text-3xl font-bold text-white tracking-tight mb-3">0</h3>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-wider">Unique engagement actions attributed to this event</div>
+                </div>
+            `;
+        } else {
+            topPanelsContainer.innerHTML = '';
+        }
+    }
+
+    // Render Top Exhibitors and Recent Activity in bottom container
+    if (bottomPanelsContainer) {
+        bottomPanelsContainer.innerHTML = visibleBottomPanels
+            .map(panel => {
+                if (panel.id === 'top-exhibitors') {
+                    return `
+                        <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-${panel.color}">${panel.icon}</span>
+                                ${panel.label}
+                            </h3>
+                            <div id="ed-top-exhibitors" class="space-y-3">
+                                <div class="text-center py-8 text-slate-600">
+                                    <span class="material-symbols-outlined text-4xl mb-2">storefront</span>
+                                    <p class="text-sm">No exhibitor data available</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (panel.id === 'recent-activity') {
+                    return `
+                        <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-${panel.color}">${panel.icon}</span>
+                                ${panel.label}
+                            </h3>
+                            <div id="ed-activity-feed" class="space-y-3">
+                                <div class="text-center py-8 text-slate-600">
+                                    <span class="material-symbols-outlined text-4xl mb-2">history</span>
+                                    <p class="text-sm">No recent activity</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+    }
+
+    console.log('[Dashboard] Cards and panels rendered');
+}
+
+// Default dashboard configuration
+const defaultDashboardConfig = {
+    primaryStats: [
+        { id: 'exhibitors', label: 'Exhibitors', icon: 'storefront', color: 'primary', visible: true, size: 'medium' },
+        { id: 'leads', label: 'Total Leads', icon: 'trending_up', color: 'emerald-400', visible: true, size: 'medium' },
+        { id: 'speakers', label: 'Speakers', icon: 'podium', color: 'blue-400', visible: true, size: 'medium' },
+        { id: 'sponsors', label: 'Sponsors', icon: 'handshake', color: 'amber-400', visible: true, size: 'medium' }
+    ],
+    secondaryStats: [
+        { id: 'attendees', label: 'Attendees', icon: 'groups', color: 'purple-400', visible: true, size: 'small' },
+        { id: 'sessions', label: 'Sessions', icon: 'event', color: 'cyan-400', visible: true, size: 'small' },
+        { id: 'registrations', label: 'Registrations', icon: 'app_registration', color: 'rose-400', visible: true, size: 'small' },
+        { id: 'booths', label: 'Booths', icon: 'business', color: 'indigo-400', visible: true, size: 'small' },
+        { id: 'members', label: 'Members', icon: 'person_add', color: 'teal-400', visible: true, size: 'small' },
+        { id: 'views', label: 'Profile Views', icon: 'visibility', color: 'orange-400', visible: true, size: 'small' }
+    ],
+    leadBreakdown: [
+        { id: 'scans', label: 'Scans', icon: 'qr_code_scanner', color: 'emerald-400', visible: true, size: 'small' },
+        { id: 'lead-views', label: 'Views', icon: 'remove_red_eye', color: 'blue-400', visible: true, size: 'small' },
+        { id: 'contacts', label: 'Contacts', icon: 'mail', color: 'purple-400', visible: true, size: 'small' },
+        { id: 'meetings', label: 'Meetings', icon: 'calendar_month', color: 'amber-400', visible: true, size: 'small' }
+    ],
+    topPanels: [
+        { id: 'event-overview', label: 'Event Overview', icon: 'analytics', color: 'emerald-400', visible: true, size: 'medium' }
+    ],
+    bottomPanels: [
+        { id: 'top-exhibitors', label: 'Top Exhibitors', icon: 'emoji_events', color: 'primary', visible: true, size: 'medium' },
+        { id: 'recent-activity', label: 'Recent Activity', icon: 'schedule', color: 'amber-400', visible: true, size: 'medium' }
+    ]
+};
+
+// Load dashboard config from localStorage
+function loadDashboardConfig() {
+    const saved = localStorage.getItem('eventDashboardConfig');
+    if (saved) {
+        try {
+            const config = JSON.parse(saved);
+
+            // Migrate old "panels" structure to topPanels/bottomPanels
+            if (config.panels && !config.topPanels && !config.bottomPanels) {
+                config.topPanels = config.panels.filter(p => p.id === 'event-overview');
+                config.bottomPanels = config.panels.filter(p => p.id !== 'event-overview');
+                delete config.panels;
+            }
+
+            // Ensure topPanels and bottomPanels exist
+            if (!config.topPanels) {
+                config.topPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.topPanels));
+            }
+            if (!config.bottomPanels) {
+                config.bottomPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.bottomPanels));
+            }
+
+            return config;
+        } catch (e) {
+            console.error('[Dashboard] Failed to parse saved config:', e);
+        }
+    }
+    return JSON.parse(JSON.stringify(defaultDashboardConfig)); // Deep clone
+}
+
+// Save dashboard config to localStorage
+function saveDashboardConfig(config) {
+    localStorage.setItem('eventDashboardConfig', JSON.stringify(config));
+}
+
+// Current dashboard configuration
+let currentDashboardConfig = loadDashboardConfig();
+
+// Store loaded views globally for access
+let loadedDashboardViews = [];
+
+function openDashboardCustomizer() {
+    try {
+        console.log('[Dashboard] Opening customizer...');
+        const modal = document.getElementById('dashboard-customizer-modal');
+        if (!modal) {
+            console.error('[Dashboard] Modal not found!');
+            return;
+        }
+
+        console.log('[Dashboard] Current config:', currentDashboardConfig);
+
+        // Populate customizer with current config
+        populateTopPanelsCustomizer();
+        populatePrimaryStatsCustomizer();
+        populateSecondaryStatsCustomizer();
+        populateLeadBreakdownCustomizer();
+        populateBottomPanelsCustomizer();
+        loadSavedViews();
+
+        modal.classList.remove('hidden');
+        console.log('[Dashboard] Customizer opened successfully');
+    } catch (error) {
+        console.error('[Dashboard] Error opening customizer:', error);
+        alert('Error opening dashboard customizer: ' + error.message);
+    }
+}
+
+function closeDashboardCustomizer() {
+    const modal = document.getElementById('dashboard-customizer-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function populatePrimaryStatsCustomizer() {
+    const container = document.getElementById('primary-stats-customizer');
+    if (!container) return;
+
+    // Filter out any null/undefined entries
+    currentDashboardConfig.primaryStats = currentDashboardConfig.primaryStats.filter(stat => stat != null);
+
+    container.innerHTML = currentDashboardConfig.primaryStats.map((stat, index) => `
+        <div class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all" draggable="true" data-section="primary" data-index="${index}">
+            <span class="material-symbols-outlined text-slate-500 cursor-move text-[16px]">drag_indicator</span>
+            <div class="flex-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-${stat.color} text-[18px]">${stat.icon}</span>
+                <span class="text-xs font-medium text-white">${stat.label}</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${stat.visible ? 'checked' : ''} onchange="toggleStatVisibility('primary', ${index})" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    `).join('');
+
+    addDragAndDropListeners('primary');
+}
+
+function populateSecondaryStatsCustomizer() {
+    const container = document.getElementById('secondary-stats-customizer');
+    if (!container) return;
+
+    // Filter out any null/undefined entries
+    currentDashboardConfig.secondaryStats = currentDashboardConfig.secondaryStats.filter(stat => stat != null);
+
+    container.innerHTML = currentDashboardConfig.secondaryStats.map((stat, index) => `
+        <div class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all" draggable="true" data-section="secondary" data-index="${index}">
+            <span class="material-symbols-outlined text-slate-500 cursor-move text-[16px]">drag_indicator</span>
+            <div class="flex-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-${stat.color} text-[18px]">${stat.icon}</span>
+                <span class="text-xs font-medium text-white">${stat.label}</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${stat.visible ? 'checked' : ''} onchange="toggleStatVisibility('secondary', ${index})" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    `).join('');
+
+    addDragAndDropListeners('secondary');
+}
+
+function populateLeadBreakdownCustomizer() {
+    const container = document.getElementById('lead-breakdown-customizer');
+    if (!container) return;
+
+    // Filter out any null/undefined entries
+    currentDashboardConfig.leadBreakdown = currentDashboardConfig.leadBreakdown.filter(stat => stat != null);
+
+    container.innerHTML = currentDashboardConfig.leadBreakdown.map((stat, index) => `
+        <div class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all" draggable="true" data-section="leadBreakdown" data-index="${index}">
+            <span class="material-symbols-outlined text-slate-500 cursor-move text-[16px]">drag_indicator</span>
+            <div class="flex-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-${stat.color} text-[18px]">${stat.icon}</span>
+                <span class="text-xs font-medium text-white">${stat.label}</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${stat.visible ? 'checked' : ''} onchange="toggleStatVisibility('leadBreakdown', ${index})" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    `).join('');
+
+    addDragAndDropListeners('leadBreakdown');
+}
+
+function populateTopPanelsCustomizer() {
+    const container = document.getElementById('top-panels-customizer');
+    if (!container) return;
+
+    // Ensure topPanels exist
+    if (!currentDashboardConfig.topPanels) {
+        currentDashboardConfig.topPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.topPanels));
+    }
+
+    // Filter out any null/undefined entries
+    currentDashboardConfig.topPanels = currentDashboardConfig.topPanels.filter(panel => panel != null);
+
+    container.innerHTML = currentDashboardConfig.topPanels.map((panel, index) => `
+        <div class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all" draggable="true" data-section="topPanels" data-index="${index}">
+            <span class="material-symbols-outlined text-slate-500 cursor-move text-[16px]">drag_indicator</span>
+            <div class="flex-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-${panel.color} text-[18px]">${panel.icon}</span>
+                <span class="text-xs font-medium text-white">${panel.label}</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${panel.visible ? 'checked' : ''} onchange="toggleStatVisibility('topPanels', ${index})" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    `).join('');
+
+    addDragAndDropListeners('topPanels');
+}
+
+function populateBottomPanelsCustomizer() {
+    const container = document.getElementById('bottom-panels-customizer');
+    if (!container) return;
+
+    // Ensure bottomPanels exist
+    if (!currentDashboardConfig.bottomPanels) {
+        currentDashboardConfig.bottomPanels = JSON.parse(JSON.stringify(defaultDashboardConfig.bottomPanels));
+    }
+
+    // Filter out any null/undefined entries
+    currentDashboardConfig.bottomPanels = currentDashboardConfig.bottomPanels.filter(panel => panel != null);
+
+    container.innerHTML = currentDashboardConfig.bottomPanels.map((panel, index) => `
+        <div class="flex items-center gap-2 p-2 bg-slate-800/30 rounded-lg border border-slate-700/30 hover:border-slate-600/50 transition-all" draggable="true" data-section="bottomPanels" data-index="${index}">
+            <span class="material-symbols-outlined text-slate-500 cursor-move text-[16px]">drag_indicator</span>
+            <div class="flex-1 flex items-center gap-2">
+                <span class="material-symbols-outlined text-${panel.color} text-[18px]">${panel.icon}</span>
+                <span class="text-xs font-medium text-white">${panel.label}</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${panel.visible ? 'checked' : ''} onchange="toggleStatVisibility('bottomPanels', ${index})" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    `).join('');
+
+    addDragAndDropListeners('bottomPanels');
+}
+
+function toggleStatVisibility(section, index) {
+    console.log('[Dashboard] Toggling visibility:', section, index);
+
+    // Map section names to config property names
+    const sectionMap = {
+        'primary': 'primaryStats',
+        'secondary': 'secondaryStats',
+        'leadBreakdown': 'leadBreakdown',
+        'topPanels': 'topPanels',
+        'bottomPanels': 'bottomPanels'
+    };
+
+    const configSection = sectionMap[section] || section;
+    currentDashboardConfig[configSection][index].visible = !currentDashboardConfig[configSection][index].visible;
+
+    console.log('[Dashboard] New visibility state:', currentDashboardConfig[configSection][index].label, '=', currentDashboardConfig[configSection][index].visible);
+}
+
+function changeSectionSize(section, size) {
+    console.log('[Dashboard] Changing section size:', section, size);
+
+    // Map section names to config property names
+    const sectionMap = {
+        'primary': 'primaryStats',
+        'secondary': 'secondaryStats',
+        'leadBreakdown': 'leadBreakdown',
+        'topPanels': 'topPanels',
+        'bottomPanels': 'bottomPanels'
+    };
+
+    const configSection = sectionMap[section] || section;
+
+    // Apply size to all stats in the section
+    currentDashboardConfig[configSection].forEach(stat => {
+        stat.size = size;
+    });
+
+    // Update button states
+    ['small', 'medium', 'large'].forEach(s => {
+        const btn = document.getElementById(`${section}-size-${s}`);
+        if (btn) {
+            if (s === size) {
+                btn.className = 'size-6 rounded bg-primary text-white flex items-center justify-center text-[10px] font-bold transition-all';
+            } else {
+                btn.className = 'size-6 rounded bg-slate-700/50 text-slate-400 hover:bg-slate-700 flex items-center justify-center text-[10px] font-bold transition-all';
+            }
+        }
+    });
+
+    console.log('[Dashboard] Section', section, 'resized to', size);
+}
+
+let draggedElement = null;
+let draggedSection = null;
+let draggedIndex = null;
+
+function addDragAndDropListeners(section) {
+    let containerId;
+    if (section === 'topPanels') {
+        containerId = 'top-panels-customizer';
+    } else if (section === 'bottomPanels') {
+        containerId = 'bottom-panels-customizer';
+    } else if (section === 'primary' || section === 'secondary') {
+        containerId = `${section}-stats-customizer`;
+    } else {
+        containerId = `${section}-customizer`;
+    }
+
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const items = container.querySelectorAll(`[data-section="${section}"]`);
+
+    // Make container a drop zone (with visual feedback)
+    container.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if (draggedElement && draggedSection !== section) {
+            container.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            container.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+        }
+    });
+
+    container.addEventListener('dragleave', (e) => {
+        // Only remove highlight if leaving the container itself
+        if (e.target === container) {
+            container.style.backgroundColor = '';
+            container.style.borderColor = '';
+        }
+    });
+
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    });
+
+    container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove visual feedback
+        container.style.backgroundColor = '';
+        container.style.borderColor = '';
+
+        // Handle drop - works for both empty containers and dropping in empty space
+        if (draggedElement) {
+            // Append to container if dropped on container itself or if container is empty
+            const items = container.querySelectorAll(`[data-section="${section}"]`);
+            if (e.target === container || items.length === 0) {
+                container.appendChild(draggedElement);
+            }
+            handleCrossSectionDrop(draggedSection, section);
+        }
+    });
+
+    items.forEach((item) => {
+        item.addEventListener('dragstart', (e) => {
+            draggedElement = item;
+            draggedSection = section;
+            draggedIndex = parseInt(item.dataset.index);
+            item.classList.add('opacity-50');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', (e) => {
+            item.classList.remove('opacity-50');
+        });
+
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+
+            if (draggedElement !== item) {
+                const bounding = item.getBoundingClientRect();
+                const offset = e.clientY - bounding.top;
+
+                if (offset > bounding.height / 2) {
+                    item.parentNode.insertBefore(draggedElement, item.nextSibling);
+                } else {
+                    item.parentNode.insertBefore(draggedElement, item);
+                }
+            }
+        });
+
+        item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const targetSection = item.dataset.section;
+            handleCrossSectionDrop(draggedSection, targetSection);
+        });
+    });
+}
+
+function handleCrossSectionDrop(fromSection, toSection) {
+    const sectionMap = {
+        'primary': 'primaryStats',
+        'secondary': 'secondaryStats',
+        'leadBreakdown': 'leadBreakdown',
+        'topPanels': 'topPanels',
+        'bottomPanels': 'bottomPanels'
+    };
+
+    const fromConfigSection = sectionMap[fromSection] || fromSection;
+    const toConfigSection = sectionMap[toSection] || toSection;
+
+    console.log('[Dashboard] Drop:', fromSection, '->', toSection);
+    console.log('[Dashboard] Dragged index:', draggedIndex);
+
+    if (fromSection === toSection) {
+        // Same section - reorder
+        let containerId;
+        if (toSection === 'topPanels') {
+            containerId = 'top-panels-customizer';
+        } else if (toSection === 'bottomPanels') {
+            containerId = 'bottom-panels-customizer';
+        } else if (toSection === 'primary' || toSection === 'secondary') {
+            containerId = `${toSection}-stats-customizer`;
+        } else {
+            containerId = `${toSection}-customizer`;
+        }
+        const container = document.getElementById(containerId);
+        const allItems = container.querySelectorAll(`[data-section="${toSection}"]`);
+        const newOrder = Array.from(allItems).map(el => parseInt(el.dataset.index));
+
+        // Create new array with reordered items
+        const reordered = newOrder.map(oldIndex => currentDashboardConfig[toConfigSection][oldIndex]);
+        currentDashboardConfig[toConfigSection] = reordered;
+
+        console.log('[Dashboard] Reordered', toConfigSection, ':', reordered.map(s => s.label));
+    } else {
+        // Different section - move item
+        const movedItem = currentDashboardConfig[fromConfigSection][draggedIndex];
+
+        if (!movedItem) {
+            console.error('[Dashboard] No item found at index', draggedIndex, 'in', fromConfigSection);
+            return;
+        }
+
+        console.log('[Dashboard] Moving item:', movedItem.label);
+
+        // Get target section's size (use the first item's size, or default)
+        let targetSectionSize = 'medium'; // default
+        if (currentDashboardConfig[toConfigSection].length > 0) {
+            targetSectionSize = currentDashboardConfig[toConfigSection][0].size || 'medium';
+        } else {
+            // Use default sizes for each section type
+            const defaultSizes = {
+                'primaryStats': 'medium',
+                'secondaryStats': 'small',
+                'leadBreakdown': 'small',
+                'topPanels': 'medium',
+                'bottomPanels': 'medium'
+            };
+            targetSectionSize = defaultSizes[toConfigSection] || 'medium';
+        }
+
+        // Apply the target section's size to the moved item
+        movedItem.size = targetSectionSize;
+        console.log('[Dashboard] Applied size', targetSectionSize, 'to', movedItem.label);
+
+        // Get target position from DOM BEFORE removing from source
+        let targetContainerId;
+        if (toSection === 'topPanels') {
+            targetContainerId = 'top-panels-customizer';
+        } else if (toSection === 'bottomPanels') {
+            targetContainerId = 'bottom-panels-customizer';
+        } else if (toSection === 'primary' || toSection === 'secondary') {
+            targetContainerId = `${toSection}-stats-customizer`;
+        } else {
+            targetContainerId = `${toSection}-customizer`;
+        }
+        const targetContainerEl = document.getElementById(targetContainerId);
+
+        // Find where the dragged element is in the target container's DOM
+        const allChildren = Array.from(targetContainerEl.children);
+        const draggedElPosition = allChildren.indexOf(draggedElement);
+
+        // Remove from source configuration
+        currentDashboardConfig[fromConfigSection].splice(draggedIndex, 1);
+
+        // Insert into target at the position where it was dropped
+        if (draggedElPosition >= 0) {
+            currentDashboardConfig[toConfigSection].splice(draggedElPosition, 0, movedItem);
+            console.log('[Dashboard] Inserted at position', draggedElPosition);
+        } else {
+            currentDashboardConfig[toConfigSection].push(movedItem);
+            console.log('[Dashboard] Pushed to end');
+        }
+
+        console.log('[Dashboard] Moved', movedItem.label, 'from', fromConfigSection, 'to', toConfigSection);
+        console.log('[Dashboard] Source now has', currentDashboardConfig[fromConfigSection].length, 'items');
+        console.log('[Dashboard] Target now has', currentDashboardConfig[toConfigSection].length, 'items');
+    }
+
+    // Refresh all sections
+    populateTopPanelsCustomizer();
+    populatePrimaryStatsCustomizer();
+    populateSecondaryStatsCustomizer();
+    populateLeadBreakdownCustomizer();
+    populateBottomPanelsCustomizer();
+}
+
+function applyDashboardCustomization() {
+    console.log('[Dashboard] ═══ Applying Customization ═══');
+    console.log('[Dashboard] Current config:', JSON.stringify(currentDashboardConfig, null, 2));
+
+    // Save the configuration to localStorage
+    saveDashboardConfig(currentDashboardConfig);
+    console.log('[Dashboard] ✅ Configuration saved to localStorage');
+
+    // Verify it was saved
+    const savedConfig = localStorage.getItem('eventDashboardConfig');
+    console.log('[Dashboard] Verification - Config in localStorage:', savedConfig ? 'YES' : 'NO');
+
+    // Close the modal
+    closeDashboardCustomizer();
+
+    // Apply the changes to the current dashboard view
+    console.log('[Dashboard] Applying configuration to dashboard...');
+    renderDashboardWithConfig();
+
+    // Reload current event if one is selected to refresh the view
+    if (currentEventDashboardId) {
+        console.log('[Dashboard] Reloading event dashboard with new configuration');
+        loadEventDashboard();
+    } else {
+        console.log('[Dashboard] No event selected, configuration will apply on next load');
+    }
+
+    console.log('[Dashboard] ═══ Customization Applied ═══');
+}
+
+function resetDashboardToDefault() {
+    // Reset to default configuration
+    currentDashboardConfig = JSON.parse(JSON.stringify(defaultDashboardConfig));
+
+    // Save the configuration
+    saveDashboardConfig(currentDashboardConfig);
+
+    // Update customizer UI
+    populateTopPanelsCustomizer();
+    populatePrimaryStatsCustomizer();
+    populateSecondaryStatsCustomizer();
+    populateLeadBreakdownCustomizer();
+    populateBottomPanelsCustomizer();
+
+    // Apply to dashboard immediately
+    renderDashboardWithConfig();
+
+    // Reload current event if one is selected
+    if (currentEventDashboardId) {
+        loadEventDashboard();
+    }
+
+    console.log('[Dashboard] Reset to default configuration');
+}
+
+function resetAllFields() {
+    // Make all fields visible
+    currentDashboardConfig.primaryStats.forEach(stat => stat.visible = true);
+    currentDashboardConfig.secondaryStats.forEach(stat => stat.visible = true);
+    currentDashboardConfig.leadBreakdown.forEach(stat => stat.visible = true);
+    if (currentDashboardConfig.topPanels) {
+        currentDashboardConfig.topPanels.forEach(panel => panel.visible = true);
+    }
+    if (currentDashboardConfig.bottomPanels) {
+        currentDashboardConfig.bottomPanels.forEach(panel => panel.visible = true);
+    }
+
+    // Save the configuration
+    saveDashboardConfig(currentDashboardConfig);
+
+    // Refresh UI
+    populateTopPanelsCustomizer();
+    populatePrimaryStatsCustomizer();
+    populateSecondaryStatsCustomizer();
+    populateLeadBreakdownCustomizer();
+    populateBottomPanelsCustomizer();
+
+    console.log('[Dashboard] All fields reset to visible');
+}
+
+function renderDashboardWithConfig() {
+    console.log('[Dashboard] ═══ Rendering Dashboard ═══');
+    console.log('[Dashboard] Current config:', currentDashboardConfig);
+    console.log('[Dashboard] Primary stats visible:', currentDashboardConfig.primaryStats.filter(s => s.visible).map(s => s.label));
+    console.log('[Dashboard] Secondary stats visible:', currentDashboardConfig.secondaryStats.filter(s => s.visible).map(s => s.label));
+    console.log('[Dashboard] Lead breakdown visible:', currentDashboardConfig.leadBreakdown.filter(s => s.visible).map(s => s.label));
+    renderDashboardCards();
+    console.log('[Dashboard] ═══ Rendering Complete ═══');
+}
+
+// Saved Views Management
+async function loadSavedViews() {
+    const container = document.getElementById('saved-views-list');
+    if (!container) return;
+
+    let views = [];
+
+    // Load from Supabase if user is logged in
+    if (window.currentUser && window.supabaseClient) {
+        try {
+            const { data, error } = await window.supabaseClient
+                .from('dashboard_views')
+                .select('*')
+                .eq('user_id', window.currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (!error && data) {
+                views = data.map(row => ({
+                    id: row.id,
+                    name: row.view_name,
+                    config: row.configuration,
+                    savedAt: row.created_at
+                }));
+                console.log('[Dashboard] Loaded', views.length, 'views from Supabase');
+            }
+        } catch (error) {
+            console.error('[Dashboard] Failed to load from Supabase:', error);
+        }
+    }
+
+    // Fallback to localStorage if no Supabase data
+    if (views.length === 0) {
+        const saved = localStorage.getItem('dashboardSavedViews');
+        views = saved ? JSON.parse(saved) : [];
+    }
+
+    // Store globally for access by loadSavedView
+    loadedDashboardViews = views;
+
+    if (views.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500">No saved views yet</p>';
+        return;
+    }
+
+    container.innerHTML = views.map((view, index) => `
+        <div class="flex items-center gap-1.5 px-2 py-1 bg-slate-800/50 rounded border border-slate-700/30">
+            <button onclick="loadSavedView(${index})" class="text-xs font-medium text-white hover:text-primary transition-all">${view.name}</button>
+            <button onclick="deleteSavedView(${index}, ${view.id ? `'${view.id}'` : 'null'})" class="text-slate-500 hover:text-red-400 transition-all">
+                <span class="material-symbols-outlined text-[14px]">close</span>
+            </button>
+        </div>
+    `).join('');
+}
+
+async function saveCurrentView() {
+    const viewName = prompt('Enter a name for this view:');
+    if (!viewName) return;
+
+    const viewData = {
+        name: viewName,
+        config: JSON.parse(JSON.stringify(currentDashboardConfig)),
+        savedAt: new Date().toISOString()
+    };
+
+    // Save to Supabase if user is logged in
+    if (window.currentUser && window.supabaseClient) {
+        try {
+            const { data, error } = await window.supabaseClient
+                .from('dashboard_views')
+                .insert([{
+                    user_id: window.currentUser.id,
+                    view_name: viewName,
+                    configuration: viewData.config,
+                    created_at: viewData.savedAt
+                }]);
+
+            if (error) throw error;
+
+            console.log('[Dashboard] Saved view to Supabase:', viewName);
+        } catch (error) {
+            console.error('[Dashboard] Failed to save to Supabase:', error);
+            // Fallback to localStorage
+        }
+    }
+
+    // Also save to localStorage as backup
+    const saved = localStorage.getItem('dashboardSavedViews');
+    const views = saved ? JSON.parse(saved) : [];
+    views.push(viewData);
+    localStorage.setItem('dashboardSavedViews', JSON.stringify(views));
+
+    console.log('[Dashboard] Saved view:', viewName, 'Config:', currentDashboardConfig);
+    await loadSavedViews();
+
+    // Show success message
+    alert(`View "${viewName}" saved successfully!`);
+}
+
+function loadSavedView(index) {
+    if (!loadedDashboardViews || !loadedDashboardViews[index]) {
+        console.error('[Dashboard] View not found at index:', index);
+        return;
+    }
+
+    const view = loadedDashboardViews[index];
+    console.log('[Dashboard] Loading saved view:', view.name, view.config);
+
+    // Deep clone the configuration
+    currentDashboardConfig = JSON.parse(JSON.stringify(view.config));
+
+    // Update the customizer UI
+    populateTopPanelsCustomizer();
+    populatePrimaryStatsCustomizer();
+    populateSecondaryStatsCustomizer();
+    populateLeadBreakdownCustomizer();
+    populateBottomPanelsCustomizer();
+
+    console.log('[Dashboard] View loaded, current config:', currentDashboardConfig);
+}
+
+async function deleteSavedView(index, viewId) {
+    if (!confirm('Delete this saved view?')) return;
+
+    // Delete from Supabase if viewId exists
+    if (viewId && window.supabaseClient) {
+        try {
+            const { error } = await window.supabaseClient
+                .from('dashboard_views')
+                .delete()
+                .eq('id', viewId);
+
+            if (error) throw error;
+            console.log('[Dashboard] Deleted view from Supabase:', viewId);
+        } catch (error) {
+            console.error('[Dashboard] Failed to delete from Supabase:', error);
+        }
+    }
+
+    // Also delete from localStorage
+    const saved = localStorage.getItem('dashboardSavedViews');
+    if (saved) {
+        const views = JSON.parse(saved);
+        views.splice(index, 1);
+        localStorage.setItem('dashboardSavedViews', JSON.stringify(views));
+    }
+
+    await loadSavedViews();
 }
 
 // ── Advanced Filters Modal Management ─────────────────────────────────────

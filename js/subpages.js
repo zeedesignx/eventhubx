@@ -11,6 +11,7 @@ async function ensureEventSubpageData(eventId, dataType) {
     }
 
     if (window.eventSubpagesCache[cacheKey][dataType]) {
+        console.log(`[Cache] 💾 Using cached ${dataType} for event ${cacheKey}:`, window.eventSubpagesCache[cacheKey][dataType].length);
         return window.eventSubpagesCache[cacheKey][dataType];
     }
 
@@ -21,7 +22,7 @@ async function ensureEventSubpageData(eventId, dataType) {
     };
     const apiType = typeMap[dataType] || dataType;
 
-    console.log(`[Cache] 📥 Fetching ${dataType} for event: ${cacheKey}`);
+    console.log(`[Cache] 📥 Fetching ${dataType} (apiType: ${apiType}) for event: ${cacheKey}`);
 
     // 1. Try Supabase type-specific tables first (primary source)
     const tableMap = {
@@ -38,11 +39,19 @@ async function ensureEventSubpageData(eventId, dataType) {
 
             if (!isGlobal) {
                 query = query.eq('event_id', eventId).single();
+                console.log(`[Cache] 🔍 Querying Supabase table ${tableName} for event_id: ${eventId}`);
                 const { data: row, error } = await query;
+
+                if (error) {
+                    console.warn(`[Cache] ⚠️ Supabase error for ${tableName}/${eventId}:`, error);
+                }
+
                 if (!error && row && Array.isArray(row.data)) {
                     window.eventSubpagesCache[cacheKey][dataType] = row.data;
                     console.log(`[Cache] ✅ Supabase (${tableName}): ${row.data.length} ${dataType} for event ${cacheKey}`);
                     return row.data;
+                } else if (!error && row) {
+                    console.warn(`[Cache] ⚠️ Row exists but data is not an array:`, row);
                 }
             } else {
                 const { data: rows, error } = await query;
@@ -64,8 +73,10 @@ async function ensureEventSubpageData(eventId, dataType) {
     // 2. Fallback: backend API (reads from local JSON files)
     try {
         if (!isGlobal) {
+            console.log(`[Cache] 🌐 Trying API fallback: /api/subpages/${eventId}/${apiType}`);
             const res = await fetch(`/api/subpages/${encodeURIComponent(eventId)}/${apiType}`);
             const d = await res.json();
+            console.log(`[Cache] 📦 API response for ${dataType}:`, d);
             if (d.status === 'success') {
                 window.eventSubpagesCache[cacheKey][dataType] = d.data;
                 console.log(`[Cache] ✅ API fallback: ${d.data.length} ${dataType} for event ${cacheKey}`);
@@ -78,6 +89,7 @@ async function ensureEventSubpageData(eventId, dataType) {
         console.error(`[Cache] ❌ API fallback also failed for ${dataType}/${cacheKey}:`, apiErr);
     }
 
+    console.warn(`[Cache] ⚠️ Returning empty array for ${dataType}/${cacheKey}`);
     return [];
 }
 
