@@ -1,0 +1,694 @@
+[
+  {
+    "record_id": "rec2HNdWr1noLyCV2",
+    "event_id": "RXZlbnRfMjU2MzY4OA==",
+    "name": "EDGEx 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-04-13",
+    "event_end_date": null,
+    "kickoff_date": "2025-02-24",
+    "planned_exhibitor_launch": "2025-02-12",
+    "planned_visitor_launch": "2025-03-23",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 19,
+    "total_tasks": 19,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:49:23.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/XLDRiYmEIwUKQyayur5bMQ/IbEohb4Yhd_f7wFsB7greR16KIjh5VxtNHih9u4ncZTIGvfYrwiTj84U0KdPmA5gUZw12LWCOK51zYWobKnkJDIdD1U0bltKrP257SO-6ajYBM_emOQIQFubkeTIarzh3XgalcJiBj3cZrJ6QKS0QOxRjUVNCVPD1s0NYUwJPXs/sb5WjYuGDnna2bvTE8og6-buvzm3aUxOTq4GA6bvMPU",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "rec3LGSCrY35IB2fh",
+    "event_id": "RXZlbnRfNDM0MzA3OQ==",
+    "name": "Cityscape Global 2026",
+    "stage": "Kickoff",
+    "project_lead": [
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-11-16",
+    "event_end_date": "2026-11-19",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-09-17",
+    "planned_visitor_launch": "2026-10-26",
+    "actual_exhibitor_launch": "2026-09-17",
+    "actual_visitor_launch": "2026-10-26",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/q6HnENPy5j4-JDcq6PfPxw/r3XI7vOMkY1plQQH-6wE31os0QwTBrmOHficO-Jl8c7q-pt7YGpU4ZEUyHqGq4h8BIAcJhD5Bsn2aKSEeB4uLxWyWZoNcpNIy9fq3rmUZ74W8LVyF4jDvXILbJ928ZVdP7SnnRQmYVIJrvFT7DvBr5BbaTY6HL-HRZKVC_QG0Jk/JaBQcDUprkFJt_v1R1XEh5NxyBtqupjmy626e_rcVAs",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/IhIn5nPmZAYOAkhNPG-ssQ/VhUSF_hxQIIN6BxqJdeul4LasbBGadcNJU8onaPbM1K6TFrbvVf1GLyAZ7be9TpC3bYsny4E2-C0yYh6HjG-bHEQnFnrDgTs_VjY5jRMeTsIeFDTbEFNHfVJqGckzmNaiwXROvyV4upk-GW24t_rDg/LsuhkCebHwRxbR5s61C7HgfF9YxVqy-pFbkdMJWYYYw",
+    "portfolio": null
+  },
+  {
+    "record_id": "rec56jks2767jhSAy",
+    "event_id": "RXZlbnRfNDM2Njk5MQ==",
+    "name": "Black Hat MEA 2026",
+    "stage": "Kickoff",
+    "project_lead": [
+      "Zvonimir Petrovic",
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-12-01",
+    "event_end_date": "2026-12-03",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-10-02",
+    "planned_visitor_launch": "2026-11-10",
+    "actual_exhibitor_launch": "2026-10-02",
+    "actual_visitor_launch": "2026-11-10",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Premagic",
+        "domain": "premagic.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/0r-Bg43SCVGKgayGI8rpww/C84Fgp0DWSBEF7bo8LdcA_y7kVqz4PfN7SZoxWnEAJTlmyZwUkhesotdASyuPtTZOyJItGLqnfzXoLMgvHHkcc5z6m7KQY0P7xD1IbyKluzclVrP41wsWxt6ANjcVJ-p2Z3DK_BiDgsqW3Y-Ud12bOzuVo01P3cciGuJae0YA7U/MfWPyrUBOpv_-X4Hmmrj-qAcAAKo_yAQltyPf5YlzHQ",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/aSHv5o0YUkWfzdMtrob2uw/WWC8adtR8PwSags5j2_MLlk94NcIef6D_cVNRxstDU4-KCymfHBuY6U82Khuv6q-npvrOkm_mMdkY3DYJ1Hubc4XDjmj1inIiMApqfHtRt2Hgee89I8q_8--hAiGvf7hBszhxSv13VHSUAlrhDygJg/x4nLwCL-HqDj12CPi2ZuuwXlmPL9azpX00VCpZSqGXw",
+    "portfolio": null
+  },
+  {
+    "record_id": "recBFfWv485GfpSW9",
+    "event_id": "RXZlbnRfNDM2NjU0MQ==",
+    "name": "Global Health Exhibition 2026",
+    "stage": "Kickoff",
+    "project_lead": [
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-10-26",
+    "event_end_date": "2026-10-29",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-08-27",
+    "planned_visitor_launch": "2026-10-05",
+    "actual_exhibitor_launch": "2026-08-27",
+    "actual_visitor_launch": "2026-10-05",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:49:25.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/B-JWAiDVErt34IHB_7nNIQ/YUcIaEmVlQBpkvubw_DJH9LbxSquq2c8wuXhE6t4TEzoGdZNXqJiGwatMkJuVcWYjIoyL-CM4YoldG9R2w8YK2PsIEor2jlpYyNOsydMFDgpJR2Xn0cyw1SPb7bqq0qR_lMLXBP7x6vWhaApViyTeN_lERDLtk4MOUNKRwKCyTEpI6CjyAox9BOUyM9LdAx3/lgFG875UBNDkOPGMgjgwrb7sPVKplA4OCDsU8B3ne7c",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recHDlouf3KOlqQQf",
+    "event_id": "RXZlbnRfMjU3MTMzMA==",
+    "name": "Money 20/20 Middle East 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-09-15",
+    "event_end_date": "2025-09-17",
+    "kickoff_date": "2025-05-08",
+    "planned_exhibitor_launch": "2025-07-17",
+    "planned_visitor_launch": "2025-08-25",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 21,
+    "total_tasks": 21,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/qWLwupigH5xKEI5_YPCbJA/kC1PMMs5Jognu-NZ655_gUx7j2NeqgOJLjo5sMhLH24ai9AE6kmWhtMvnl0wY_tE227PrSBIimVSaYyCu2RjnArSEUZlb7CFE55qHcbjpKpWauyBFWx5WfNCBo8jDrefDIP4jTgAZ5b-bvwHPBKamZrrOuROwA-5087MI3x6cNto0UaJ5DHJ94F8fyyKAR30/F3UNN2rnRsk0rjcTun8n_YUO4AqxkllG03tU_DJ7XHM",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/bY-4KdklXBpyVNGElUiUGw/E2az_qHREgeI7IXmkSFQ2gNVlS39SHaTwvQ8YIAybq3u2XWsdMGx-m00ul4Fu-xpso_YL2Icw4cOl-teZgmqXKuO_EHq4HLqsuZz9YboXk_Kc21Qy_Gl7t9kYSS9Td1vUJ68ELZ6LNIy_gp9C1Vt6Q/1_C0KhAZ9IP0oMtzcoqYQ03sTkkeKvpPRVc2QazzS2I",
+    "portfolio": null
+  },
+  {
+    "record_id": "recLErOlo7516e8EB",
+    "event_id": null,
+    "name": "Kingdom of Gaming 2026",
+    "stage": "Kickoff",
+    "project_lead": [
+      "Zvonimir Petrovic",
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-12-01",
+    "event_end_date": "2026-12-03",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-10-02",
+    "planned_visitor_launch": "2026-11-10",
+    "actual_exhibitor_launch": "2026-10-02",
+    "actual_visitor_launch": "2026-11-10",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": "In progress",
+    "app_ready_date": null,
+    "last_modified": "2026-02-20T17:30:25.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Premagic",
+        "domain": "premagic.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/BjEbSPUb2JJj2g_ql7vrDg/PjgT60hEIJQoGIox6t5Ae6xc8dPp1mKbIocDJfXWXpJsGkjryb-8Pj2Nu16yYECXUZ2xuoBV3s8297X-JvME5kPNGxyJ0JsgWSiPcDGqMg0D4bHhyKmvvGIxAoZAzp-_aEqr4ehY9TuGDQa-gpyT2va4ueEDBEVLAfh_RZwKWsy6wZJGpP8PkRdu3mNQwdTAA2ek__vCRV2gK9Xh1M7LnQ/N3XFFWwR2L1MBlEhfqdvSArdvtFtqD3rPbwSCWo0DuI",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recQ3BMmoIIo7OAwE",
+    "event_id": "RXZlbnRfMjc3NzQ3Ng==",
+    "name": "Innovation Driven Water Sustainability Conference 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-12-08",
+    "event_end_date": "2025-12-10",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2025-10-09",
+    "planned_visitor_launch": "2025-11-17",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 18,
+    "total_tasks": 18,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:53:58.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/FxIY7-26Hn2ZIcwexN5ihQ/4EvM-YwdxQKMU3SDT4prKN5VpZW69P799onEvlAAGgPAnOnMnKxDWw9XLQ0x4IN8ZOhouq6tLePTWyXWO9-6JTiO6zHWAZ3B5xq3gvxOw8RR8BUnKOy2y-nkwmXAl5tB8vdEDjNwWeUASiFs_YPs1bTbhM4hmkHjSToU3ilguPKOLWnUNJyT5vhekGNlxs_CyQP1PC5Ml8BmQ5akr7QHJPmGnEDtCuBEf7jI1MiRuK8/R0ZuHYoqvZRTGNvRUm26MK4H1O2SFzUojQtzmhj8oVg",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recVAd556gKgu7qFj",
+    "event_id": "RXZlbnRfMjc3NzQ3Mw==",
+    "name": "LEAP x DeepFest 2026",
+    "stage": "Execution",
+    "project_lead": [
+      "Zvonimir Petrovic",
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-04-13",
+    "event_end_date": "2026-04-16",
+    "kickoff_date": "2025-10-01",
+    "planned_exhibitor_launch": "2026-02-11",
+    "planned_visitor_launch": "2026-03-23",
+    "actual_exhibitor_launch": "2026-02-19",
+    "actual_visitor_launch": "2026-03-23",
+    "delayed_exh_launch": "\u26a0\ufe0f 8 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "36%",
+    "tasks_done": 8,
+    "total_tasks": 22,
+    "status_of_app": "Ready for Launch",
+    "app_ready_date": "2026-01-15",
+    "last_modified": "2026-02-21T19:49:26.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Premagic",
+        "domain": "premagic.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Synopsis",
+        "domain": "roziesynopsis.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/HL-hPE6V8Xzd7Uso9R3Bgg/RNuz8IsVL8PccoytZ_GJc2MQCOP4uH7Uq3zai3F7S_hisyEc-vQOpjhvjoKL1RTC9DO0fLOOHKQjEOkgipLUecEnBSCVWH8qOnD9l6StEarBzL611QkaxHToGtRV5xcH9jJ6yvWGvGurrjJ1ScqO8Vk54fpyRjefrnXF24MUXy0/hjL65BS5hXwcRYzTkF7gG2UrB31nPFxkOEEqP_2lpIQ",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/w-hFKqrtq_DaGfrbAYZAzA/ZnXaVXvJr30p8TGSzsGzkk7hw9Au2fc82cD2qNGUvTl7tPVXIf8SWy9kpwgTKGE6nVmiAYSTXq7eNgjTPB_i5gy3sb-h73R8XFXacYMi6lX_SZFGgmkXtHOZK_ePbrzuWXU0qqXsf16-WpJgWlU5AmHF-mv1e1Sj2IoCkYHEZ0M/eVpsF95b9SobCKuktzWFV4zuKzdLqw_vd_Om3bWXp6M",
+    "portfolio": null
+  },
+  {
+    "record_id": "recWpWohMqjny2Rfa",
+    "event_id": "RXZlbnRfMjE2MTMwNQ==",
+    "name": "LEAP x DeepFest 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-02-09",
+    "event_end_date": "2025-02-12",
+    "kickoff_date": "2024-11-01",
+    "planned_exhibitor_launch": "2024-12-11",
+    "planned_visitor_launch": "2025-01-19",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 7,
+    "total_tasks": 7,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:49:27.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/4HBAbrpImGEfLPYoFMXarw/OhRh3B67Yjdvi5OC4KDZPczyxsPhO_abMeBZZRn135t7htquR0TbxELLE8Ct0D7HrAfDVc0zBIhL0r482JY8HVEsPn1CHWjY_iCauq8W6KoEgohUF4V5wtRH4sBOgDf0hHQDY1uPdfIfwAIZfAB2Te9J3eeruQMRd5sTh3xm7hY/OOkh2_3xY6jAt7iUYvL1j3LsJn4tbgHQ360kmEBMqzI",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recY35Srm2wE4pRad",
+    "event_id": "RXZlbnRfMjU2ODE0OQ==",
+    "name": "Umrah & Ziyarah Forum 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-04-14",
+    "event_end_date": null,
+    "kickoff_date": "2025-02-03",
+    "planned_exhibitor_launch": "2025-02-13",
+    "planned_visitor_launch": "2025-03-24",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 22,
+    "total_tasks": 22,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:53:59.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/fQ8IFrM-STPiWHLOqZIAZw/Xvrwt2u7sf56P3CaG_U-UDT6rFpHvUZdTCltxP0XQyLOtTjU2C3kH2OI7mJj1yqtgV99Uj4t70uD2ga9bNtL-kyuY1JD7XurA0PC_rplu3BzuDbMvq0eDZfd-I3MfGrYMQaK1JYXCfYYA87mb8yevpjcjWo2Zy40bR6bTtN2b7E/TnirwvK_6l5xhj9ndf4YDKPDXXGKucwQ8IcJlI3uBxQ",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recb2y8pZTWyiBiuB",
+    "event_id": "RXZlbnRfMjY2NDAwNA==",
+    "name": "Cityscape Global 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-11-17",
+    "event_end_date": "2025-11-20",
+    "kickoff_date": "2025-05-13",
+    "planned_exhibitor_launch": "2025-09-18",
+    "planned_visitor_launch": "2025-10-27",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 18,
+    "total_tasks": 18,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/q6HnENPy5j4-JDcq6PfPxw/r3XI7vOMkY1plQQH-6wE31os0QwTBrmOHficO-Jl8c7q-pt7YGpU4ZEUyHqGq4h8BIAcJhD5Bsn2aKSEeB4uLxWyWZoNcpNIy9fq3rmUZ74W8LVyF4jDvXILbJ928ZVdP7SnnRQmYVIJrvFT7DvBr5BbaTY6HL-HRZKVC_QG0Jk/JaBQcDUprkFJt_v1R1XEh5NxyBtqupjmy626e_rcVAs",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/IhIn5nPmZAYOAkhNPG-ssQ/VhUSF_hxQIIN6BxqJdeul4LasbBGadcNJU8onaPbM1K6TFrbvVf1GLyAZ7be9TpC3bYsny4E2-C0yYh6HjG-bHEQnFnrDgTs_VjY5jRMeTsIeFDTbEFNHfVJqGckzmNaiwXROvyV4upk-GW24t_rDg/LsuhkCebHwRxbR5s61C7HgfF9YxVqy-pFbkdMJWYYYw",
+    "portfolio": null
+  },
+  {
+    "record_id": "recbjFfq5Mj3ouHVl",
+    "event_id": null,
+    "name": "Made in Saudi 2025",
+    "stage": "Cancelled",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-12-15",
+    "event_end_date": "2025-12-17",
+    "kickoff_date": "2025-07-01",
+    "planned_exhibitor_launch": "2025-10-16",
+    "planned_visitor_launch": "2025-11-24",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "60%",
+    "tasks_done": 3,
+    "total_tasks": 5,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-17T10:34:08.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/6gY0RQXmqxhq7n1w4X2CbQ/sXmnCto2HweCsK7IB2pWMQncHaw_u7GvW85VSC0lDCXBpSjXUZcSO7xVrdjqLzbJZBr4y91NfVx3YwyJpiWI2YYfpZhAVKhBBCP69-SxXsG1EQ25z5n6HeoePWiZ9jta3dRStZrnooDZnRS4RXwx43tS02-ceE-uxRyULfnq2Ejada6ZrYD3XepTGXRDY4wO/PhTjNOr9_qnJZI_g-hW_gmmlQpZdnKup_corrNaraLQ",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recnZCV1vwEM5aYHF",
+    "event_id": "RXZlbnRfMjY2OTcxMQ==",
+    "name": "Global Health Exhibition 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-10-27",
+    "event_end_date": "2025-10-30",
+    "kickoff_date": "2025-06-23",
+    "planned_exhibitor_launch": "2025-08-28",
+    "planned_visitor_launch": "2025-10-06",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 19,
+    "total_tasks": 19,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:49:30.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/B-JWAiDVErt34IHB_7nNIQ/YUcIaEmVlQBpkvubw_DJH9LbxSquq2c8wuXhE6t4TEzoGdZNXqJiGwatMkJuVcWYjIoyL-CM4YoldG9R2w8YK2PsIEor2jlpYyNOsydMFDgpJR2Xn0cyw1SPb7bqq0qR_lMLXBP7x6vWhaApViyTeN_lERDLtk4MOUNKRwKCyTEpI6CjyAox9BOUyM9LdAx3/lgFG875UBNDkOPGMgjgwrb7sPVKplA4OCDsU8B3ne7c",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recpLfYYOczPP3OuC",
+    "event_id": "RXZlbnRfNDMyMjY0Ng==",
+    "name": "Money20/20 Middle East 2026",
+    "stage": "Planning",
+    "project_lead": [
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-09-14",
+    "event_end_date": "2026-09-16",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-07-16",
+    "planned_visitor_launch": "2026-08-24",
+    "actual_exhibitor_launch": "2026-07-16",
+    "actual_visitor_launch": "2026-08-24",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": "In progress",
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Premagic",
+        "domain": "premagic.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/qWLwupigH5xKEI5_YPCbJA/kC1PMMs5Jognu-NZ655_gUx7j2NeqgOJLjo5sMhLH24ai9AE6kmWhtMvnl0wY_tE227PrSBIimVSaYyCu2RjnArSEUZlb7CFE55qHcbjpKpWauyBFWx5WfNCBo8jDrefDIP4jTgAZ5b-bvwHPBKamZrrOuROwA-5087MI3x6cNto0UaJ5DHJ94F8fyyKAR30/F3UNN2rnRsk0rjcTun8n_YUO4AqxkllG03tU_DJ7XHM",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/bY-4KdklXBpyVNGElUiUGw/E2az_qHREgeI7IXmkSFQ2gNVlS39SHaTwvQ8YIAybq3u2XWsdMGx-m00ul4Fu-xpso_YL2Icw4cOl-teZgmqXKuO_EHq4HLqsuZz9YboXk_Kc21Qy_Gl7t9kYSS9Td1vUJ68ELZ6LNIy_gp9C1Vt6Q/1_C0KhAZ9IP0oMtzcoqYQ03sTkkeKvpPRVc2QazzS2I",
+    "portfolio": null
+  },
+  {
+    "record_id": "recrZXASkygwnRyZm",
+    "event_id": "RXZlbnRfMjY2OTcxMg==",
+    "name": "Black Hat MEA 2025",
+    "stage": "Complete",
+    "project_lead": [
+      "Zvonimir Petrovic"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2025-12-02",
+    "event_end_date": "2025-12-04",
+    "kickoff_date": "2025-10-13",
+    "planned_exhibitor_launch": "2025-10-03",
+    "planned_visitor_launch": "2025-11-11",
+    "actual_exhibitor_launch": null,
+    "actual_visitor_launch": null,
+    "delayed_exh_launch": "\u26a0\ufe0f NaN days",
+    "delayed_vis_launch": "\u26a0\ufe0f NaN days",
+    "progress": "100%",
+    "tasks_done": 21,
+    "total_tasks": 21,
+    "status_of_app": null,
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T20:50:35.000Z",
+    "tech_stack": [],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/0r-Bg43SCVGKgayGI8rpww/C84Fgp0DWSBEF7bo8LdcA_y7kVqz4PfN7SZoxWnEAJTlmyZwUkhesotdASyuPtTZOyJItGLqnfzXoLMgvHHkcc5z6m7KQY0P7xD1IbyKluzclVrP41wsWxt6ANjcVJ-p2Z3DK_BiDgsqW3Y-Ud12bOzuVo01P3cciGuJae0YA7U/MfWPyrUBOpv_-X4Hmmrj-qAcAAKo_yAQltyPf5YlzHQ",
+    "mockup_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/aSHv5o0YUkWfzdMtrob2uw/WWC8adtR8PwSags5j2_MLlk94NcIef6D_cVNRxstDU4-KCymfHBuY6U82Khuv6q-npvrOkm_mMdkY3DYJ1Hubc4XDjmj1inIiMApqfHtRt2Hgee89I8q_8--hAiGvf7hBszhxSv13VHSUAlrhDygJg/x4nLwCL-HqDj12CPi2ZuuwXlmPL9azpX00VCpZSqGXw",
+    "portfolio": null
+  },
+  {
+    "record_id": "recwpH6J9atowt5P1",
+    "event_id": "RXZlbnRfMzI4MjYzNQ==",
+    "name": "Umrah & Ziyarah Forum 2026",
+    "stage": "Execution",
+    "project_lead": [
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-03-30",
+    "event_end_date": "2026-04-01",
+    "kickoff_date": null,
+    "planned_exhibitor_launch": "2026-02-01",
+    "planned_visitor_launch": "2026-03-10",
+    "actual_exhibitor_launch": "2026-02-01",
+    "actual_visitor_launch": "2026-03-10",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "71%",
+    "tasks_done": 15,
+    "total_tasks": 21,
+    "status_of_app": "Ready for Launch",
+    "app_ready_date": "2026-01-10",
+    "last_modified": "2026-02-21T19:49:54.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/fQ8IFrM-STPiWHLOqZIAZw/Xvrwt2u7sf56P3CaG_U-UDT6rFpHvUZdTCltxP0XQyLOtTjU2C3kH2OI7mJj1yqtgV99Uj4t70uD2ga9bNtL-kyuY1JD7XurA0PC_rplu3BzuDbMvq0eDZfd-I3MfGrYMQaK1JYXCfYYA87mb8yevpjcjWo2Zy40bR6bTtN2b7E/TnirwvK_6l5xhj9ndf4YDKPDXXGKucwQ8IcJlI3uBxQ",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "recyazDzZiLQ1TnF9",
+    "event_id": "RXZlbnRfNDM0NDIyOA==",
+    "name": "LEAP EAST 2026",
+    "stage": "Planning",
+    "project_lead": [
+      "Zvonimir Petrovic",
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-07-08",
+    "event_end_date": "2026-07-10",
+    "kickoff_date": "2026-03-03",
+    "planned_exhibitor_launch": "2026-05-09",
+    "planned_visitor_launch": "2026-06-17",
+    "actual_exhibitor_launch": "2026-05-09",
+    "actual_visitor_launch": "2026-06-17",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "0%",
+    "tasks_done": 0,
+    "total_tasks": 19,
+    "status_of_app": "In progress",
+    "app_ready_date": null,
+    "last_modified": "2026-02-21T19:54:28.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Exhibitly",
+        "domain": "exhibitly.ai"
+      },
+      {
+        "name": "Premagic",
+        "domain": "premagic.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/Sdab1lm80GDqiPJSdvh8mg/03ueNq4vvU_LeeiRxEtiTrLhEEVCEAGGkguoXlJF-3isryNaqbs8xwuFfart8TPmNPP3_NblDH8qbSRJ-wcM-9QNX9VUDbYFIwzAesaV5w5Iq8e4FOkXPn-zvNCK3RS1ira18a1IOSbsIp0ST9LVcbk_1h4pHCz45iaQiQOZM40/PcoNvX2yzGC8eFiiAXwFsnV5fZ-IKfft_AFXxy7nbSA",
+    "mockup_url": null,
+    "portfolio": null
+  },
+  {
+    "record_id": "reczNI0600Aw7wZbs",
+    "event_id": "RXZlbnRfMzg2NDk1OA==",
+    "name": "CPHI x BIO Middle East 2026",
+    "stage": "Execution",
+    "project_lead": [
+      "Zvonimir Petrovic",
+      "Mudasir hamal"
+    ],
+    "type": [
+      "Swapcard"
+    ],
+    "event_start_date": "2026-05-11",
+    "event_end_date": "2026-05-13",
+    "kickoff_date": "2025-11-27",
+    "planned_exhibitor_launch": "2026-03-03",
+    "planned_visitor_launch": "2026-04-20",
+    "actual_exhibitor_launch": "2026-03-03",
+    "actual_visitor_launch": "2026-04-20",
+    "delayed_exh_launch": "0 days",
+    "delayed_vis_launch": "0 days",
+    "progress": "35%",
+    "tasks_done": 7,
+    "total_tasks": 20,
+    "status_of_app": "Ready for Launch",
+    "app_ready_date": "2026-01-29",
+    "last_modified": "2026-02-21T19:49:55.000Z",
+    "tech_stack": [
+      {
+        "name": "Swapcard",
+        "domain": "swapcard.com"
+      },
+      {
+        "name": "Invisual",
+        "domain": "invisual.co"
+      }
+    ],
+    "logo_url": "https://v5.airtableusercontent.com/v3/u/50/50/1771776000000/ZH8HGucwmYwaUzo9PupLTg/29GG3E95JKTKXKPkKuTpJD1_EU5NadRiXGBPibaaraOHJhlXNfc9edM9FhDbcqh8Lxj9d9aKzpz6Og42t5F26PHwLWblfJKUyp6WlUqrLbx5V-EF-aCG_G6nFOUh6TVYHfYDId6-5A_EXeVIYbqvFJFhzmmeU8unlKDhYlDu9YI/ALe6qzsmJ-_Qh2cC0GUaIoUNNMEJlqyjUyQ-v6IOcUo",
+    "mockup_url": null,
+    "portfolio": null
+  }
+]

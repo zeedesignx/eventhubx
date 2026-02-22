@@ -1,0 +1,32 @@
+[
+  {
+    "id": "usr_zvonimir",
+    "username": "zee",
+    "display_name": "Zvonimir Petrovic",
+    "short_name": "Zee",
+    "role": "Digital Ops Manager",
+    "initials": "ZP",
+    "avatar_color": "from-violet-500 to-indigo-600",
+    "password_hash": "6f8639f6e24c28b4d8e48fe275aa45b2ce6de4e71064d2bfba807519a5fc0bf8"
+  },
+  {
+    "id": "usr_mudasir",
+    "username": "mudasir",
+    "display_name": "Mudasir Hamal",
+    "short_name": "Mudu",
+    "role": "Digital Ops Executive",
+    "initials": "MH",
+    "avatar_color": "from-cyan-500 to-blue-600",
+    "password_hash": "6f8639f6e24c28b4d8e48fe275aa45b2ce6de4e71064d2bfba807519a5fc0bf8"
+  },
+  {
+    "id": "usr_admin",
+    "username": "admin",
+    "display_name": "System Admin",
+    "short_name": "Admin",
+    "role": "Test Administrator",
+    "initials": "SA",
+    "avatar_color": "from-rose-500 to-orange-600",
+    "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
+  }
+]

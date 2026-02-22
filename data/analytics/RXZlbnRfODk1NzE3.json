@@ -1,0 +1,21 @@
+{
+  "event_id": "RXZlbnRfODk1NzE3",
+  "stats_total_leads": 14,
+  "stats_badges_scanned": 0,
+  "stats_business_cards_scanned": 0,
+  "stats_connections_made": 14,
+  "stats_connection_requests_sent": 0,
+  "stats_messages_exchanged": 10,
+  "stats_meetings_created": 0,
+  "stats_exhibitor_views": 0,
+  "stats_exhibitor_bookmarks": 0,
+  "event_breakdown": {
+    "connection_create": 14,
+    "connection_request_update": 9,
+    "message_create": 10
+  },
+  "raw_count": 33,
+  "fetched_at": "2026-02-22T13:10:39.838355",
+  "time_gt": "2025-02-22T13:10:38.000Z",
+  "time_lt": null
+}

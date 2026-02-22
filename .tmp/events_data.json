@@ -1,0 +1,122 @@
+{
+  "status": "success",
+  "data": {
+    "events": {
+      "Active": [
+        {
+          "id": "RXZlbnRfMzg2NDk1OA==",
+          "title": "CPHI x BIO Middle East 2026",
+          "timezone": "Asia/Riyadh",
+          "beginsAt": "2026-05-11 09:00:00",
+          "endsAt": "2026-05-13 19:00:00",
+          "isLive": true,
+          "isPublic": true,
+          "community": {
+            "name": "Events by CPHI"
+          }
+        },
+        {
+          "id": "RXZlbnRfMjc3NzQ3Mw==",
+          "title": "LEAP 2026",
+          "timezone": "Asia/Riyadh",
+          "beginsAt": "2026-04-13 09:00:00",
+          "endsAt": "2026-04-16 19:00:00",
+          "isLive": true,
+          "isPublic": true,
+          "community": {
+            "name": "LEAP"
+          }
+        },
+        {
+          "id": "RXZlbnRfMzI4MjYzNQ==",
+          "title": "Umrah & Ziyarah Forum 2026",
+          "timezone": "Asia/Riyadh",
+          "beginsAt": "2026-03-30 10:00:00",
+          "endsAt": "2026-04-01 22:00:00",
+          "isLive": true,
+          "isPublic": true,
+          "community": {
+            "name": "Informa Markets | IM EMEA | Tahaluf | Umrah and Ziyarah Forum"
+          }
+        },
+        {
+          "id": "RXZlbnRfNDI5ODk4Ng==",
+          "title": "CMA Shipping 2026",
+          "timezone": "America/New_York",
+          "beginsAt": "2026-03-10 08:00:00",
+          "endsAt": "2026-03-12 19:00:00",
+          "isLive": true,
+          "isPublic": true,
+          "community": {
+            "name": "Informa Markets Maritime and Design"
+          }
+        },
+        {
+          "id": "RXZlbnRfMjk2MDA1NA==",
+          "title": "kbb Birmingham 2026",
+          "timezone": "Europe/London",
+          "beginsAt": "2026-03-01 09:30:00",
+          "endsAt": "2026-03-04 17:00:00",
+          "isLive": true,
+          "isPublic": true,
+          "community": {
+            "name": "Informa Markets Maritime and Design"
+          }
+        }
+      ],
+      "Future": [
+        {
+          "id": "RXZlbnRfNDM0MzA3OQ==",
+          "title": "Cityscape Global 2026",
+          "timezone": "Asia/Riyadh",
+          "beginsAt": "2026-11-16 09:00:00",
+          "endsAt": "2026-11-19 19:00:00",
+          "isLive": false,
+          "isPublic": true,
+          "community": {
+            "name": "Cityscape"
+          }
+        },
+        {
+          "id": "RXZlbnRfNDMyMjY0Ng==",
+          "title": "Money20/20 Middle East 2026",
+          "timezone": "Asia/Riyadh",
+          "beginsAt": "2026-09-14 09:00:00",
+          "endsAt": "2026-09-16 19:00:00",
+          "isLive": false,
+          "isPublic": true,
+          "community": {
+            "name": "Money20/20 Middle East"
+          }
+        }
+      ],
+      "Past": [],
+      "Unpublished": [
+        {
+          "id": "RXZlbnRfNDM0NDIyOA==",
+          "title": "LEAP EAST 2026",
+          "timezone": "Asia/Hong_Kong",
+          "beginsAt": "2026-07-08 09:00:00",
+          "endsAt": "2026-07-10 19:00:00",
+          "isLive": false,
+          "isPublic": false,
+          "community": {
+            "name": "Informa Markets | IM EMEA | Tahaluf | LEAP EAST"
+          }
+        },
+        {
+          "id": "RXZlbnRfNDMzMjU0MQ==",
+          "title": "Leap East Homepage Builder",
+          "timezone": "Africa/Nairobi",
+          "beginsAt": "2026-04-01 09:00:00",
+          "endsAt": "2026-06-29 19:00:00",
+          "isLive": false,
+          "isPublic": false,
+          "community": {
+            "name": "Tahaluf Demo"
+          }
+        }
+      ]
+    }
+  }
+}

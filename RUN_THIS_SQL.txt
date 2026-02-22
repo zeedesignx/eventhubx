@@ -1,0 +1,47 @@
+================================================================================
+PLEASE RUN THIS SQL IN SUPABASE SQL EDITOR
+================================================================================
+
+Go to: https://supabase.com/dashboard/project/liocnahgqtsztaebfuhj/sql/new
+
+Copy and paste this SQL, then click RUN:
+
+================================================================================
+
+-- Add stat columns to swapcard_events table
+ALTER TABLE swapcard_events
+ADD COLUMN IF NOT EXISTS registrations_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS exhibitors_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS members_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS speakers_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS sessions_count INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS leads_count INTEGER DEFAULT 0;
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_swapcard_events_registrations ON swapcard_events(registrations_count);
+CREATE INDEX IF NOT EXISTS idx_swapcard_events_exhibitors ON swapcard_events(exhibitors_count);
+CREATE INDEX IF NOT EXISTS idx_swapcard_events_speakers ON swapcard_events(speakers_count);
+
+-- Migrate existing data from stats JSONB column
+UPDATE swapcard_events
+SET
+    exhibitors_count = COALESCE((stats->>'exhibitorCount')::integer, 0),
+    members_count = COALESCE((stats->>'membersCount')::integer, 0),
+    speakers_count = COALESCE((stats->>'personCount')::integer, 0),
+    sessions_count = COALESCE((stats->>'sessionsCount')::integer, 0),
+    leads_count = COALESCE((stats->>'leadsCount')::integer, 0)
+WHERE stats IS NOT NULL;
+
+-- Calculate registrations from data JSONB (groups array)
+UPDATE swapcard_events
+SET registrations_count = (
+    SELECT COALESCE(SUM((group_item->>'peopleCount')::integer), 0)
+    FROM jsonb_array_elements(COALESCE(data->'groups', '[]'::jsonb)) AS group_item
+)
+WHERE data->'groups' IS NOT NULL;
+
+================================================================================
+
+After running the SQL above, come back and I'll trigger the sync for you!
+
+================================================================================
