@@ -1,19 +1,43 @@
 {
     "version": 2,
-    "functions": {
-        "main.py": {
-            "memory": 1024,
-            "maxDuration": 10
-        }
-    },
-    "rewrites": [
+    "builds": [
         {
-            "source": "/api/(.*)",
-            "destination": "/main.py"
+            "src": "main.py",
+            "use": "@vercel/python"
         },
         {
-            "source": "/(exhibitors|people|speakers|sessions|sponsors|events|settings|dashboard)",
-            "destination": "/main.py"
+            "src": "js/**",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "css/**",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "index.html",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/js/(.*)",
+            "dest": "/js/$1"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/css/$1"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "main.py"
+        },
+        {
+            "src": "/(exhibitors|people|speakers|sessions|sponsors|events|settings|dashboard)",
+            "dest": "main.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "main.py"
         }
     ],
     "crons": [
