@@ -75,7 +75,8 @@ async def _download_one(client, url: str):
         if resp.status_code == 200:
             dest.write_bytes(resp.content)
     except Exception as e:
-        print(f"[ImgCache] {url[:60]}: {e}")
+        safe_url = str(url)[:60] if url else "unknown"
+        print(f"[ImgCache] {safe_url}: {e}")
 
 async def _bulk_download_parallel(urls: list[str]):
     """Downloads all URLs concurrently (max 20 at a time) into img_cache/."""
