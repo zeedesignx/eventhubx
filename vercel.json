@@ -28,7 +28,11 @@
             "dest": "/main.py"
         },
         {
-            "src": "/",
+            "src": "/(exhibitors|people|speakers|sessions|sponsors|events|settings)",
+            "dest": "/main.py"
+        },
+        {
+            "src": "/(.*)",
             "dest": "/main.py"
         }
     ],
