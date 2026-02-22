@@ -1,26 +1,37 @@
-from fastapi import FastAPI, Request, BackgroundTasks, Query
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-import uvicorn
-import os
-import hashlib
-import json as _json
-import asyncio
-import mimetypes
-import httpx
-import uuid
-import base64
-from anthropic import AsyncAnthropic
-from sse_starlette.responses import EventSourceResponse
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
-from tools import get_airtable, get_events, get_subpages
-# Import Navigation layer
-import navigation
+import sys
+import traceback
 
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from fastapi import FastAPI, Request, BackgroundTasks, Query
+    from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Response
+    from fastapi.staticfiles import StaticFiles
+    from pydantic import BaseModel
+    import uvicorn
+    import os
+    import hashlib
+    import json as _json
+    import asyncio
+    import mimetypes
+    import httpx
+    import uuid
+    import base64
+    from anthropic import AsyncAnthropic
+    try:
+        from sse_starlette.responses import EventSourceResponse
+    except ImportError:
+        from sse_starlette import EventSourceResponse
+    from datetime import datetime, timezone, timedelta
+    from pathlib import Path
+    from tools import get_airtable, get_events, get_subpages
+    # Import Navigation layer
+    import navigation
+    
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    print("FATAL: Error during global imports in main.py")
+    traceback.print_exc()
+    raise
 
 app = FastAPI(title="EventHubX API")
 
