@@ -127,6 +127,11 @@
                 <span class="material-symbols-outlined">event</span>
                 <span class="text-sm font-bold uppercase tracking-widest">Events</span>
             </a>
+            <a id="nav-event-dashboard" onclick="switchView('event-dashboard')"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-500 hover:text-white hover:bg-white/5 group transition-all duration-300 cursor-pointer">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="text-sm font-bold uppercase tracking-widest">Event Dashboard</span>
+            </a>
             <a id="nav-exhibitors" onclick="switchView('exhibitors')"
                 class="flex items-center gap-3 px-3 py-3 rounded-xl text-slate-500 hover:text-white hover:bg-white/5 group transition-all duration-300 cursor-pointer">
                 <span class="material-symbols-outlined">storefront</span>
@@ -938,6 +943,156 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Event Dashboard Subpage ─────────────────────────────────────────── -->
+        <div id="view-event-dashboard" class="flex-1 overflow-hidden hidden bg-[#0f1419]">
+            <div class="h-full flex flex-col">
+                <!-- Event Dashboard Header -->
+                <div class="flex-shrink-0 px-8 py-6 border-b border-slate-700/30">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 id="event-dashboard-title" class="text-2xl font-bold text-white mb-1">Event Dashboard</h1>
+                            <p id="event-dashboard-subtitle" class="text-sm text-slate-400">Select an event to view detailed analytics</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <select id="event-dashboard-selector" onchange="loadEventDashboard()"
+                                class="bg-[#1e2732] border border-slate-700/30 text-white text-sm rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary/50 outline-none min-w-[250px]">
+                                <option value="">Select an event...</option>
+                            </select>
+                            <button onclick="refreshEventDashboard()"
+                                class="size-10 bg-[#1e2732] border border-slate-700/30 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#252f3d] transition-all">
+                                <span class="material-symbols-outlined text-[20px]">refresh</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Dashboard Content -->
+                <div id="event-dashboard-content" class="flex-1 overflow-y-auto p-8">
+                    <!-- Empty State -->
+                    <div id="event-dashboard-empty" class="h-full flex items-center justify-center">
+                        <div class="text-center space-y-4">
+                            <div class="size-24 mx-auto rounded-2xl bg-slate-800/30 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-600" style="font-size: 48px;">event</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-400">No Event Selected</h3>
+                                <p class="text-sm text-slate-600 mt-1">Choose an event from the dropdown above to view its dashboard</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid (hidden by default) -->
+                    <div id="event-dashboard-grid" class="hidden space-y-6">
+                        <!-- Stats Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <!-- Exhibitors Card -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Exhibitors</span>
+                                    <span class="material-symbols-outlined text-primary text-xl">storefront</span>
+                                </div>
+                                <div class="text-3xl font-black text-white" id="ed-exhibitors-count">0</div>
+                                <div class="text-xs text-slate-500 mt-2">Total registered</div>
+                            </div>
+
+                            <!-- Leads Card -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Leads</span>
+                                    <span class="material-symbols-outlined text-emerald-400 text-xl">trending_up</span>
+                                </div>
+                                <div class="text-3xl font-black text-white" id="ed-leads-count">0</div>
+                                <div class="text-xs text-slate-500 mt-2">Captured leads</div>
+                            </div>
+
+                            <!-- Speakers Card -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Speakers</span>
+                                    <span class="material-symbols-outlined text-blue-400 text-xl">podium</span>
+                                </div>
+                                <div class="text-3xl font-black text-white" id="ed-speakers-count">0</div>
+                                <div class="text-xs text-slate-500 mt-2" id="ed-speakers-subtitle">Active speakers</div>
+                            </div>
+
+                            <!-- Sponsors Card -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-5 hover:border-slate-600/50 transition-all">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Sponsors</span>
+                                    <span class="material-symbols-outlined text-amber-400 text-xl">handshake</span>
+                                </div>
+                                <div class="text-3xl font-black text-white" id="ed-sponsors-count">0</div>
+                                <div class="text-xs text-slate-500 mt-2">Active sponsors</div>
+                            </div>
+                        </div>
+
+                        <!-- Three Column Grid matching mockup -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Left Panel - Top Exhibitors -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
+                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary">emoji_events</span>
+                                    Top Exhibitors
+                                </h3>
+                                <div id="ed-top-exhibitors" class="space-y-3">
+                                    <!-- Populated by JS -->
+                                    <div class="text-center py-8 text-slate-600">
+                                        <span class="material-symbols-outlined text-4xl mb-2">storefront</span>
+                                        <p class="text-sm">No exhibitor data available</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Center Panel - Event Stats Summary -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6 flex flex-col">
+                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-emerald-400">analytics</span>
+                                    Event Overview
+                                </h3>
+                                <div class="flex-1 flex flex-col justify-center space-y-4">
+                                    <div class="p-4 rounded-xl bg-slate-800/20 border border-slate-700/20">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs text-slate-400 uppercase tracking-wider">Attendance Rate</span>
+                                            <span class="text-lg font-bold text-emerald-400" id="ed-attendance-rate">0%</span>
+                                        </div>
+                                        <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                            <div id="ed-attendance-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="p-3 rounded-xl bg-slate-800/20">
+                                            <div class="text-xs text-slate-400 mb-1">Sessions</div>
+                                            <div class="text-2xl font-bold text-white" id="ed-sessions-count">0</div>
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-slate-800/20">
+                                            <div class="text-xs text-slate-400 mb-1">Attendees</div>
+                                            <div class="text-2xl font-bold text-white" id="ed-attendees-count">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Panel - Recent Activity -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6">
+                                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-amber-400">schedule</span>
+                                    Recent Activity
+                                </h3>
+                                <div id="ed-activity-feed" class="space-y-3">
+                                    <!-- Populated by JS -->
+                                    <div class="text-center py-8 text-slate-600">
+                                        <span class="material-symbols-outlined text-4xl mb-2">history</span>
+                                        <p class="text-sm">No recent activity</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

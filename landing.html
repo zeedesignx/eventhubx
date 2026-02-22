@@ -295,47 +295,131 @@
                 </div>
             </div>
 
-            <!-- Mockup Image Placeholder -->
-            <div class="mt-20 w-full max-w-5xl relative z-10 group">
-                <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full scale-75 opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                <div
-                    class="rounded-3xl border border-white/10 overflow-hidden shadow-2xl shadow-primary/10 glass p-2 relative hover:border-white/20 transition-all duration-500">
-                    <div class="h-6 w-full flex items-center gap-1.5 px-4 bg-white/5 rounded-t-2xl mb-2">
-                        <div class="size-2 rounded-full bg-rose-500/80 animate-pulse" style="animation-duration: 2s"></div>
-                        <div class="size-2 rounded-full bg-amber-500/80 animate-pulse" style="animation-duration: 2.5s; animation-delay: 0.2s"></div>
-                        <div class="size-2 rounded-full bg-emerald-500/80 animate-pulse" style="animation-duration: 3s; animation-delay: 0.4s"></div>
-                        <div class="flex-1"></div>
-                        <div class="text-[9px] font-black tracking-widest text-slate-500 uppercase">EVENTHUBX DASHBOARD 2.0</div>
+            <!-- Interactive Dashboard Preview - Matching Mockup Design -->
+            <div class="mt-20 w-full max-w-6xl relative z-10 group">
+                <div class="absolute inset-0 bg-primary/20 blur-[120px] rounded-full scale-75 opacity-50"></div>
+
+                <!-- Browser-style Container -->
+                <div class="rounded-[2rem] border border-slate-700/50 overflow-hidden shadow-2xl relative bg-[#1a1f2e]">
+                    <!-- Browser Chrome -->
+                    <div class="h-12 bg-[#0f1419] flex items-center justify-between px-5 border-b border-slate-700/50">
+                        <div class="flex items-center gap-2">
+                            <div class="size-3 rounded-full bg-[#ff5f57]"></div>
+                            <div class="size-3 rounded-full bg-[#febc2e]"></div>
+                            <div class="size-3 rounded-full bg-[#28c840]"></div>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-600 tracking-widest uppercase">EventHubX Dashboard 2.0</div>
+                        <div class="w-16"></div>
                     </div>
-                    <!-- Dashboard Preview with Animated Elements -->
-                    <div
-                        class="w-full aspect-video rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center overflow-hidden relative">
-                        <!-- Animated Grid Background -->
-                        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-                        <!-- Simulated Dashboard Elements -->
-                        <div class="absolute top-4 left-4 right-4 flex gap-2">
-                            <div class="h-8 w-48 bg-primary/20 rounded-lg animate-pulse"></div>
-                            <div class="flex-1"></div>
-                            <div class="h-8 w-8 bg-white/10 rounded-lg"></div>
-                            <div class="h-8 w-8 bg-white/10 rounded-lg"></div>
-                        </div>
-                        <div class="absolute bottom-4 left-4 right-4 top-16 grid grid-cols-3 gap-3 p-3">
-                            <div class="bg-white/5 rounded-xl border border-white/10 p-3 space-y-2 backdrop-blur-sm">
-                                <div class="h-3 w-20 bg-primary/40 rounded"></div>
-                                <div class="h-6 w-16 bg-white/20 rounded"></div>
-                            </div>
-                            <div class="bg-white/5 rounded-xl border border-white/10 p-3 space-y-2 backdrop-blur-sm">
-                                <div class="h-3 w-20 bg-emerald-500/40 rounded"></div>
-                                <div class="h-6 w-16 bg-white/20 rounded"></div>
-                            </div>
-                            <div class="bg-white/5 rounded-xl border border-white/10 p-3 space-y-2 backdrop-blur-sm">
-                                <div class="h-3 w-20 bg-amber-500/40 rounded"></div>
-                                <div class="h-6 w-16 bg-white/20 rounded"></div>
+
+                    <!-- Dashboard Content Area -->
+                    <div class="bg-[#0f1419] p-8" style="min-height: 500px;">
+                        <!-- Top Bar with Event Selector -->
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="h-10 w-48 bg-[#1e2732] rounded-xl border border-slate-700/30"></div>
+                            <div class="flex gap-3">
+                                <div class="size-10 bg-[#1e2732] rounded-xl border border-slate-700/30"></div>
+                                <div class="size-10 bg-[#1e2732] rounded-xl border border-slate-700/30"></div>
                             </div>
                         </div>
-                        <div class="text-center space-y-3 relative z-10">
-                            <span class="material-symbols-outlined text-6xl text-primary/30">dashboard</span>
-                            <p class="text-sm text-slate-600 font-bold uppercase tracking-wider">Interactive Preview</p>
+
+                        <!-- Three Column Grid matching mockup -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Left Panel - Stats -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6 space-y-6">
+                                <!-- Primary Stat -->
+                                <div class="space-y-3">
+                                    <div class="h-3 w-24 bg-primary/40 rounded-full"></div>
+                                    <div class="h-4 w-20 bg-slate-700/40 rounded"></div>
+                                </div>
+
+                                <!-- Secondary Stats -->
+                                <div class="space-y-4 pt-4">
+                                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/20">
+                                        <div class="space-y-2">
+                                            <div class="h-2 w-16 bg-slate-700/40 rounded"></div>
+                                            <div class="h-3 w-12 bg-slate-600/40 rounded"></div>
+                                        </div>
+                                        <div class="size-8 rounded-lg bg-primary/20"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/20">
+                                        <div class="space-y-2">
+                                            <div class="h-2 w-16 bg-slate-700/40 rounded"></div>
+                                            <div class="h-3 w-12 bg-slate-600/40 rounded"></div>
+                                        </div>
+                                        <div class="size-8 rounded-lg bg-emerald-500/20"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-800/20">
+                                        <div class="space-y-2">
+                                            <div class="h-2 w-16 bg-slate-700/40 rounded"></div>
+                                            <div class="h-3 w-12 bg-slate-600/40 rounded"></div>
+                                        </div>
+                                        <div class="size-8 rounded-lg bg-blue-500/20"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Center Panel - Interactive Preview Badge -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6 flex flex-col items-center justify-center text-center space-y-4">
+                                <div class="h-3 w-32 bg-emerald-500/40 rounded-full"></div>
+                                <div class="h-4 w-24 bg-slate-700/40 rounded"></div>
+
+                                <!-- Central Icon/Logo -->
+                                <div class="my-8">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-primary/20 blur-2xl"></div>
+                                        <span class="material-symbols-outlined text-slate-600 relative" style="font-size: 120px;">dashboard</span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <p class="text-sm font-bold text-slate-600 uppercase tracking-widest">Interactive Preview</p>
+                                    <p class="text-xs text-slate-700">Live demo with sample data</p>
+                                </div>
+
+                                <!-- Animated live indicator -->
+                                <div class="flex items-center gap-2 mt-4">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    <span class="text-xs text-emerald-400 font-semibold">LIVE DATA</span>
+                                </div>
+                            </div>
+
+                            <!-- Right Panel - Activity/Chart -->
+                            <div class="bg-[#1a2332]/50 backdrop-blur-sm rounded-2xl border border-slate-700/30 p-6 space-y-6">
+                                <!-- Header -->
+                                <div class="space-y-3">
+                                    <div class="h-3 w-24 bg-amber-500/40 rounded-full"></div>
+                                    <div class="h-4 w-20 bg-slate-700/40 rounded"></div>
+                                </div>
+
+                                <!-- Activity Items -->
+                                <div class="space-y-3 pt-4">
+                                    <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-800/20">
+                                        <div class="size-8 rounded-lg bg-emerald-500/20 shrink-0"></div>
+                                        <div class="flex-1 space-y-2">
+                                            <div class="h-2 w-full bg-slate-700/40 rounded"></div>
+                                            <div class="h-2 w-2/3 bg-slate-700/30 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-800/20">
+                                        <div class="size-8 rounded-lg bg-blue-500/20 shrink-0"></div>
+                                        <div class="flex-1 space-y-2">
+                                            <div class="h-2 w-full bg-slate-700/40 rounded"></div>
+                                            <div class="h-2 w-2/3 bg-slate-700/30 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-800/20">
+                                        <div class="size-8 rounded-lg bg-primary/20 shrink-0"></div>
+                                        <div class="flex-1 space-y-2">
+                                            <div class="h-2 w-full bg-slate-700/40 rounded"></div>
+                                            <div class="h-2 w-2/3 bg-slate-700/30 rounded"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -656,10 +740,193 @@
     </div>
 
     <script>
+        // ========================================
+        // DUMMY DATA FOR INTERACTIVE PREVIEW
+        // ========================================
+        const DEMO_EVENTS = [
+            {
+                id: 'evt_tech_summit_2026',
+                name: 'Tech Summit 2026',
+                exhibitors: 156,
+                leads: 8420,
+                speakers: 89,
+                sponsors: 24,
+                topExhibitors: [
+                    { name: 'TechCorp Solutions', leads: 342, booth: 'A-12', industry: 'SaaS' },
+                    { name: 'InnovateLabs', leads: 298, booth: 'B-05', industry: 'AI/ML' },
+                    { name: 'CloudNine Systems', leads: 267, booth: 'C-18', industry: 'Cloud' },
+                    { name: 'DataDrive Inc', leads: 234, booth: 'A-24', industry: 'Analytics' },
+                    { name: 'CyberShield Pro', leads: 221, booth: 'B-11', industry: 'Security' }
+                ],
+                activities: [
+                    { type: 'lead', message: 'New lead captured by TechCorp Solutions', time: '2 min ago', icon: 'person_add', color: 'emerald' },
+                    { type: 'speaker', message: 'Dr. Sarah Chen added to keynote session', time: '8 min ago', icon: 'podium', color: 'blue' },
+                    { type: 'exhibitor', message: 'InnovateLabs updated booth information', time: '15 min ago', icon: 'storefront', color: 'primary' },
+                    { type: 'sponsor', message: 'CloudNine Systems upgraded to Gold tier', time: '23 min ago', icon: 'star', color: 'amber' }
+                ]
+            },
+            {
+                id: 'evt_digital_expo_2026',
+                name: 'Digital Expo 2026',
+                exhibitors: 203,
+                leads: 12150,
+                speakers: 124,
+                sponsors: 31,
+                topExhibitors: [
+                    { name: 'QuantumLeap Digital', leads: 428, booth: 'D-01', industry: 'Blockchain' },
+                    { name: 'NextGen Robotics', leads: 389, booth: 'E-15', industry: 'Robotics' },
+                    { name: 'MetaVerse Studios', leads: 356, booth: 'F-22', industry: 'VR/AR' },
+                    { name: 'SmartCity Solutions', leads: 312, booth: 'D-08', industry: 'IoT' },
+                    { name: 'GreenTech Innovations', leads: 287, booth: 'E-19', industry: 'Clean Tech' }
+                ],
+                activities: [
+                    { type: 'lead', message: 'QuantumLeap Digital captured 12 new leads', time: '5 min ago', icon: 'trending_up', color: 'emerald' },
+                    { type: 'session', message: 'Workshop "AI Future" starting in 30 min', time: '12 min ago', icon: 'schedule', color: 'blue' },
+                    { type: 'exhibitor', message: 'NextGen Robotics booth now live', time: '18 min ago', icon: 'storefront', color: 'primary' },
+                    { type: 'sponsor', message: 'MetaVerse Studios sponsoring VIP lounge', time: '34 min ago', icon: 'handshake', color: 'amber' }
+                ]
+            },
+            {
+                id: 'evt_healthcare_summit',
+                name: 'Healthcare Innovation Summit',
+                exhibitors: 127,
+                leads: 6890,
+                speakers: 67,
+                sponsors: 18,
+                topExhibitors: [
+                    { name: 'MediTech Solutions', leads: 289, booth: 'H-04', industry: 'MedTech' },
+                    { name: 'BioGenix Research', leads: 256, booth: 'H-12', industry: 'Biotech' },
+                    { name: 'HealthAI Systems', leads: 243, booth: 'I-07', industry: 'AI Health' },
+                    { name: 'CareConnect Platform', leads: 218, booth: 'H-19', industry: 'HealthIT' },
+                    { name: 'WellnessFirst Inc', leads: 195, booth: 'I-14', industry: 'Wellness' }
+                ],
+                activities: [
+                    { type: 'lead', message: 'MediTech Solutions captured 8 new leads', time: '3 min ago', icon: 'person_add', color: 'emerald' },
+                    { type: 'speaker', message: 'Dr. James Wilson confirmed for panel', time: '11 min ago', icon: 'podium', color: 'blue' },
+                    { type: 'exhibitor', message: 'BioGenix Research uploaded presentation', time: '19 min ago', icon: 'upload_file', color: 'primary' },
+                    { type: 'sponsor', message: 'HealthAI Systems renewed sponsorship', time: '27 min ago', icon: 'handshake', color: 'amber' }
+                ]
+            }
+        ];
+
+        let currentDemoEventIndex = 0;
+
         // Check for existing session on load
         window.addEventListener('DOMContentLoaded', () => {
             checkSessionAndUpdateUI();
+            initializeDemoData();
         });
+
+        function initializeDemoData() {
+            // Populate event selector
+            const selector = document.getElementById('demo-event-selector');
+            if (selector) {
+                selector.innerHTML = DEMO_EVENTS.map((evt, idx) =>
+                    `<option value="${idx}">${evt.name}</option>`
+                ).join('');
+
+                // Load first event
+                updateDemoEvent();
+
+                // Animate numbers on load
+                setTimeout(() => animateDemoNumbers(), 500);
+            }
+        }
+
+        function updateDemoEvent() {
+            const selector = document.getElementById('demo-event-selector');
+            currentDemoEventIndex = parseInt(selector.value);
+            const event = DEMO_EVENTS[currentDemoEventIndex];
+
+            // Update stats with animation
+            animateNumber('demo-exhibitors-count', event.exhibitors);
+            animateNumber('demo-leads-count', event.leads);
+            animateNumber('demo-speakers-count', event.speakers);
+            animateNumber('demo-sponsors-count', event.sponsors);
+
+            // Update top exhibitors
+            updateTopExhibitors(event.topExhibitors);
+
+            // Update activity feed
+            updateActivityFeed(event.activities);
+        }
+
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const duration = 1000;
+            const steps = 30;
+            const stepValue = targetValue / steps;
+            let currentValue = 0;
+            let step = 0;
+
+            const interval = setInterval(() => {
+                step++;
+                currentValue = Math.min(Math.floor(stepValue * step), targetValue);
+                element.textContent = currentValue.toLocaleString();
+
+                if (step >= steps) {
+                    clearInterval(interval);
+                    element.textContent = targetValue.toLocaleString();
+                }
+            }, duration / steps);
+        }
+
+        function animateDemoNumbers() {
+            const event = DEMO_EVENTS[currentDemoEventIndex];
+            animateNumber('demo-exhibitors-count', event.exhibitors);
+            animateNumber('demo-leads-count', event.leads);
+            animateNumber('demo-speakers-count', event.speakers);
+            animateNumber('demo-sponsors-count', event.sponsors);
+        }
+
+        function updateTopExhibitors(exhibitors) {
+            const container = document.getElementById('demo-top-exhibitors');
+            if (!container) return;
+
+            const colors = ['primary', 'blue-400', 'emerald-400', 'amber-400', 'slate-400'];
+
+            container.innerHTML = exhibitors.map((ex, idx) => `
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all group cursor-pointer">
+                    <div class="size-8 rounded-lg bg-${colors[idx]}/20 flex items-center justify-center text-${colors[idx]} font-bold text-sm shrink-0">
+                        ${idx + 1}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-white truncate">${ex.name}</p>
+                        <p class="text-xs text-slate-500">${ex.booth} • ${ex.industry}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-emerald-400">${ex.leads}</p>
+                        <p class="text-xs text-slate-500">leads</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateActivityFeed(activities) {
+            const container = document.getElementById('demo-activity-feed');
+            if (!container) return;
+
+            const colorMap = {
+                'emerald': 'emerald-400',
+                'blue': 'blue-400',
+                'primary': 'primary',
+                'amber': 'amber-400'
+            };
+
+            container.innerHTML = activities.map(activity => `
+                <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <div class="size-8 rounded-lg bg-${colorMap[activity.color]}/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-${colorMap[activity.color]} text-sm">${activity.icon}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-slate-300">${activity.message}</p>
+                        <p class="text-xs text-slate-500 mt-1">${activity.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         function checkSessionAndUpdateUI() {
             const saved = sessionStorage.getItem('swapcard_user');

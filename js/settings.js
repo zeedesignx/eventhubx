@@ -141,7 +141,7 @@ async function triggerManualSync() {
 }
 
 function switchView(view, push = true) {
-    const views = ['dashboard', 'events', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
+    const views = ['dashboard', 'events', 'event-dashboard', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
 
 
 
@@ -172,6 +172,7 @@ function switchView(view, push = true) {
     const titleMap = {
         'dashboard': 'Dashboard Overview',
         'events': 'Events Directory',
+        'event-dashboard': 'Event Dashboard',
         'exhibitors': 'Exhibitors Management',
         'people': 'People Directory',
         'speakers': 'Speakers Roster',
@@ -185,7 +186,7 @@ function switchView(view, push = true) {
     // Hide/Show Global Event Filter based on view
     const filterContainer = document.getElementById('global-filter-container');
     if (filterContainer) {
-        if (view === 'dashboard' || view === 'events') {
+        if (view === 'dashboard' || view === 'events' || view === 'event-dashboard') {
             filterContainer.classList.add('hidden');
             filterContainer.classList.remove('md:block');
         } else {
@@ -199,6 +200,8 @@ function switchView(view, push = true) {
         renderSubpageMocks(view);
     } else if (view === 'events' && typeof renderAllEventsData === 'function') {
         renderAllEventsData();
+    } else if (view === 'event-dashboard' && typeof initEventDashboard === 'function') {
+        initEventDashboard();
     }
 
     // 2. Update History / URL
@@ -216,7 +219,7 @@ window.addEventListener('popstate', (e) => {
     } else {
         // Fallback to path parsing
         const path = window.location.pathname.replace(/\/$/, '').replace(/^\//, '');
-        const views = ['dashboard', 'events', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
+        const views = ['dashboard', 'events', 'event-dashboard', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
         if (views.includes(path) || path === '') {
             switchView(path || 'dashboard', false);
         } else {

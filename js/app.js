@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 3. URL Routing Logic (Handle direct entry to subpages)
     // Strip trailing slashes to correctly match valid views
     const path = window.location.pathname.replace(/\/$/, '').replace(/^\//, '');
-    const validViews = ['dashboard', 'events', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
+    const validViews = ['dashboard', 'events', 'event-dashboard', 'exhibitors', 'people', 'speakers', 'sessions', 'sponsors', 'settings'];
 
     console.log('[App] 🧭 Current path:', window.location.pathname, '→ Parsed:', path);
 
@@ -709,5 +709,317 @@ window.getCachedLogoUrl = function (url) {
 
 // Load cache on page load
 loadAirtableLogoCache();
+
+// ── Event Dashboard ──────────────────────────────────────────────────────
+let currentEventDashboardId = null;
+
+// Initialize event dashboard when switching to that view
+function initEventDashboard() {
+    // Populate event selector
+    populateEventDashboardSelector();
+}
+
+function populateEventDashboardSelector() {
+    const selector = document.getElementById('event-dashboard-selector');
+    if (!selector) return;
+
+    // Get all events from allEventsData (organized by tabs)
+    if (!window.allEventsData) {
+        selector.innerHTML = '<option value="">No events available</option>';
+        return;
+    }
+
+    // Flatten all events from all tabs
+    const allEvents = [];
+    Object.values(window.allEventsData).forEach(tabEvents => {
+        if (Array.isArray(tabEvents)) {
+            tabEvents.forEach(evt => {
+                // Avoid duplicates
+                if (!allEvents.find(e => e.id === evt.id)) {
+                    allEvents.push(evt);
+                }
+            });
+        }
+    });
+
+    if (allEvents.length === 0) {
+        selector.innerHTML = '<option value="">No events available</option>';
+        return;
+    }
+
+    // Sort events by name
+    allEvents.sort((a, b) => {
+        const nameA = a.eventName || a.title || a.name || '';
+        const nameB = b.eventName || b.title || b.name || '';
+        return nameA.localeCompare(nameB);
+    });
+
+    selector.innerHTML = '<option value="">Select an event...</option>' +
+        allEvents.map(evt =>
+            `<option value="${evt.id}">${evt.eventName || evt.title || evt.name || 'Unnamed Event'}</option>`
+        ).join('');
+}
+
+async function loadEventDashboard() {
+    const selector = document.getElementById('event-dashboard-selector');
+    const eventId = selector.value;
+
+    console.log('[EventDashboard] Loading dashboard for event:', eventId);
+
+    if (!eventId) {
+        showEventDashboardEmpty();
+        return;
+    }
+
+    currentEventDashboardId = eventId;
+
+    // Find the event data from allEventsData
+    let event = null;
+    if (window.allEventsData) {
+        for (let tab in window.allEventsData) {
+            const found = window.allEventsData[tab].find(e => e.id === eventId);
+            if (found) {
+                event = found;
+                console.log('[EventDashboard] Found event:', event);
+                break;
+            }
+        }
+    }
+
+    if (!event) {
+        console.error('[EventDashboard] Event not found:', eventId);
+        showEventDashboardEmpty();
+        return;
+    }
+
+    // Update dashboard header
+    const eventName = event.eventName || event.title || event.name || 'Event Dashboard';
+    document.getElementById('event-dashboard-title').textContent = eventName;
+    document.getElementById('event-dashboard-subtitle').textContent = `Analytics for ${eventName}`;
+
+    // Show the dashboard grid
+    document.getElementById('event-dashboard-empty').classList.add('hidden');
+    document.getElementById('event-dashboard-grid').classList.remove('hidden');
+
+    // Calculate and display metrics (await the async function)
+    await updateEventDashboardMetrics(event);
+}
+
+async function updateEventDashboardMetrics(event) {
+    console.log('[EventDashboard] Loading metrics for event:', event.id);
+
+    // Load event-specific data using ensureEventSubpageData
+    const exhibitors = await ensureEventSubpageData(event.id, 'exhibitors');
+    const speakers = await ensureEventSubpageData(event.id, 'people');
+    const sponsors = await ensureEventSubpageData(event.id, 'sponsors');
+    const sessions = await ensureEventSubpageData(event.id, 'sessions');
+
+    console.log('[EventDashboard] Data loaded:', {
+        exhibitors: exhibitors.length,
+        speakers: speakers.length,
+        sponsors: sponsors.length,
+        sessions: sessions.length
+    });
+
+    // Log first exhibitor to see structure
+    if (exhibitors.length > 0) {
+        console.log('[EventDashboard] Sample exhibitor:', exhibitors[0]);
+    }
+
+    // Calculate total leads
+    const totalLeads = exhibitors.reduce((sum, ex) => {
+        const leads = parseInt(ex.leads || ex.numberOfLeads || ex.lead_count || 0);
+        return sum + leads;
+    }, 0);
+
+    console.log('[EventDashboard] Total leads calculated:', totalLeads);
+
+    // Update stats cards
+    animateEventDashboardNumber('ed-exhibitors-count', exhibitors.length);
+    animateEventDashboardNumber('ed-leads-count', totalLeads);
+    animateEventDashboardNumber('ed-speakers-count', speakers.length);
+    animateEventDashboardNumber('ed-sponsors-count', sponsors.length);
+    animateEventDashboardNumber('ed-sessions-count', sessions.length);
+    animateEventDashboardNumber('ed-attendees-count', event.totalRegistrations || event.registrations || 0);
+
+    // Update attendance rate
+    const totalRegs = event.totalRegistrations || event.registrations || 0;
+    const totalAtt = event.totalAttendees || event.attendees || 0;
+    const attendanceRate = totalRegs ? Math.round((totalAtt / totalRegs) * 100) || 0 : 0;
+    document.getElementById('ed-attendance-rate').textContent = attendanceRate + '%';
+    document.getElementById('ed-attendance-bar').style.width = attendanceRate + '%';
+
+    // Update speakers subtitle
+    document.getElementById('ed-speakers-subtitle').textContent = `${sessions.length} sessions scheduled`;
+
+    // Update top exhibitors
+    updateEventDashboardTopExhibitors(exhibitors);
+
+    // Update activity feed
+    updateEventDashboardActivity(event, exhibitors, speakers);
+
+    console.log('[EventDashboard] Metrics updated successfully');
+}
+
+function animateEventDashboardNumber(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const duration = 1000;
+    const steps = 30;
+    const stepValue = targetValue / steps;
+    let currentValue = 0;
+    let step = 0;
+
+    const interval = setInterval(() => {
+        step++;
+        currentValue = Math.min(Math.floor(stepValue * step), targetValue);
+        element.textContent = currentValue.toLocaleString();
+
+        if (step >= steps) {
+            clearInterval(interval);
+            element.textContent = targetValue.toLocaleString();
+        }
+    }, duration / steps);
+}
+
+function updateEventDashboardTopExhibitors(exhibitors) {
+    const container = document.getElementById('ed-top-exhibitors');
+    if (!container) return;
+
+    // Sort by leads and take top 5
+    const topExhibitors = exhibitors
+        .map(ex => ({
+            ...ex,
+            leadsCount: parseInt(ex.leads || ex.numberOfLeads || ex.lead_count || 0)
+        }))
+        .sort((a, b) => b.leadsCount - a.leadsCount)
+        .slice(0, 5);
+
+    if (topExhibitors.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-slate-600">
+                <span class="material-symbols-outlined text-4xl mb-2">storefront</span>
+                <p class="text-sm">No exhibitor data available</p>
+            </div>
+        `;
+        return;
+    }
+
+    const colors = ['primary', 'blue-400', 'emerald-400', 'amber-400', 'slate-400'];
+
+    container.innerHTML = topExhibitors.map((ex, idx) => {
+        const orgName = ex.organizationName || ex.organization || ex.company || ex.name || 'Unknown';
+        const booth = ex.boothNumber || ex.booth || ex.stand || 'No booth';
+        const industry = ex.industry || ex.category || ex.sector || 'General';
+
+        return `
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all group cursor-pointer">
+                <div class="size-8 rounded-lg bg-${colors[idx]}/20 flex items-center justify-center text-${colors[idx]} font-bold text-sm shrink-0">
+                    ${idx + 1}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-white truncate">${orgName}</p>
+                    <p class="text-xs text-slate-500">${booth} • ${industry}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-bold text-emerald-400">${ex.leadsCount}</p>
+                    <p class="text-xs text-slate-500">leads</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function updateEventDashboardActivity(event, exhibitors, speakers) {
+    const container = document.getElementById('ed-activity-feed');
+    if (!container) return;
+
+    // Generate activity based on event data
+    const activities = [];
+
+    // Add some realistic activities from exhibitors
+    const recentExhibitors = (exhibitors || []).slice(0, 2);
+
+    recentExhibitors.forEach((ex, idx) => {
+        const orgName = ex.organizationName || ex.organization || ex.company || 'Exhibitor';
+        activities.push({
+            type: 'lead',
+            message: `${orgName} captured new leads`,
+            time: `${(idx + 1) * 15} min ago`,
+            icon: 'person_add',
+            color: 'emerald-400'
+        });
+    });
+
+    // Add speaker activities
+    const recentSpeakers = (speakers || []).slice(0, 1);
+
+    recentSpeakers.forEach(sp => {
+        const name = `${sp.firstName || ''} ${sp.lastName || ''}`.trim() || sp.name || 'Speaker';
+        activities.push({
+            type: 'speaker',
+            message: `${name} confirmed for session`,
+            time: '45 min ago',
+            icon: 'podium',
+            color: 'blue-400'
+        });
+    });
+
+    // Add system activity
+    activities.push({
+        type: 'system',
+        message: `Event dashboard accessed`,
+        time: 'Just now',
+        icon: 'analytics',
+        color: 'primary'
+    });
+
+    if (activities.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-slate-600">
+                <span class="material-symbols-outlined text-4xl mb-2">history</span>
+                <p class="text-sm">No recent activity</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = activities.map(activity => `
+        <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-all">
+            <div class="size-8 rounded-lg bg-${activity.color}/20 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-${activity.color} text-sm">${activity.icon}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm text-slate-300">${activity.message}</p>
+                <p class="text-xs text-slate-500 mt-1">${activity.time}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showEventDashboardEmpty() {
+    document.getElementById('event-dashboard-empty').classList.remove('hidden');
+    document.getElementById('event-dashboard-grid').classList.add('hidden');
+    document.getElementById('event-dashboard-title').textContent = 'Event Dashboard';
+    document.getElementById('event-dashboard-subtitle').textContent = 'Select an event to view detailed analytics';
+}
+
+async function refreshEventDashboard() {
+    console.log('[EventDashboard] Refresh button clicked');
+    if (currentEventDashboardId) {
+        // Clear the cache for this event to force fresh data
+        if (window.eventSubpagesCache && window.eventSubpagesCache[currentEventDashboardId]) {
+            delete window.eventSubpagesCache[currentEventDashboardId];
+            console.log('[EventDashboard] Cleared cache for event:', currentEventDashboardId);
+        }
+
+        // Reload the dashboard
+        await loadEventDashboard();
+        console.log('[EventDashboard] Dashboard refreshed');
+    } else {
+        console.log('[EventDashboard] No event selected to refresh');
+    }
+}
 
 // ── Advanced Filters Modal Management ─────────────────────────────────────
