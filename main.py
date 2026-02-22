@@ -60,12 +60,17 @@ AIRTABLE_CACHE_PATH = DATA_DIR / "airtable_data.json"
 SYNC_SETTINGS_PATH = DATA_DIR / "sync_settings.json"
 
 # ── Static Assets ──────────────────────────────────────────────────────────────
-if JS_DIR.is_dir():
-    app.mount("/js",  StaticFiles(directory=str(JS_DIR)),  name="js")
-if CSS_DIR.is_dir():
-    app.mount("/css", StaticFiles(directory=str(CSS_DIR)), name="css")
+# Always mount these; if directories are missing in some builds, FastAPI 
+# will handle the 404s, but they must be registered.
+app.mount("/js",  StaticFiles(directory=str(JS_DIR)),  name="js")
+app.mount("/css", StaticFiles(directory=str(CSS_DIR)), name="css")
+
 # Serve cached images directly as static files for fast delivery
-app.mount("/img_cache", StaticFiles(directory=str(IMG_CACHE_DIR)), name="img_cache")
+try:
+    if not IMG_CACHE_DIR.exists():
+        IMG_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    app.mount("/img_cache", StaticFiles(directory=str(IMG_CACHE_DIR)), name="img_cache")
+except Exception: pass
 
 
 # ── Image Proxy & Persistent Cache ────────────────────────────────────────────
@@ -1095,6 +1100,8 @@ Be concise, helpful, and specific to SwapcardOS functionality."""
 @app.get("/sponsors", response_class=HTMLResponse)
 @app.get("/events", response_class=HTMLResponse)
 @app.get("/settings", response_class=HTMLResponse)
+@app.get("/dashboard", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def spa_routes():
     """Serve index.html for SPA client-side routing"""
     return HTMLResponse(content=(BASE_DIR / "index.html").read_text(encoding="utf-8"))

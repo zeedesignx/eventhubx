@@ -1,39 +1,25 @@
 {
     "version": 2,
-    "builds": [
+    "rewrites": [
         {
-            "src": "main.py",
-            "use": "@vercel/python"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/js/(.*)",
-            "dest": "/js/$1"
+            "source": "/api/(.*)",
+            "destination": "/main.py"
         },
         {
-            "src": "/css/(.*)",
-            "dest": "/css/$1"
+            "source": "/js/(.*)",
+            "destination": "/js/$1"
         },
         {
-            "src": "/img_cache/(.*)",
-            "dest": "/img_cache/$1"
+            "source": "/css/(.*)",
+            "destination": "/css/$1"
         },
         {
-            "src": "/api/(.*)",
-            "dest": "/api/$1"
+            "source": "/img_cache/(.*)",
+            "destination": "/img_cache/$1"
         },
         {
-            "src": "/dashboard",
-            "dest": "/main.py"
-        },
-        {
-            "src": "/(exhibitors|people|speakers|sessions|sponsors|events|settings)",
-            "dest": "/main.py"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/main.py"
+            "source": "/(exhibitors|people|speakers|sessions|sponsors|events|settings|dashboard)",
+            "destination": "/main.py"
         }
     ],
     "crons": [
