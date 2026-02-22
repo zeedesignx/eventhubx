@@ -1,21 +1,23 @@
 {
   "event_id": "RXZlbnRfODk1NzE3",
-  "stats_total_leads": 14,
+  "stats_total_leads": 20,
   "stats_badges_scanned": 0,
   "stats_business_cards_scanned": 0,
-  "stats_connections_made": 14,
+  "stats_connections_made": 20,
   "stats_connection_requests_sent": 0,
-  "stats_messages_exchanged": 10,
+  "stats_messages_exchanged": 17,
   "stats_meetings_created": 0,
   "stats_exhibitor_views": 0,
   "stats_exhibitor_bookmarks": 0,
   "event_breakdown": {
-    "connection_create": 14,
-    "connection_request_update": 9,
-    "message_create": 10
+    "connection_create": 20,
+    "connection_request_update": 13,
+    "message_create": 17,
+    "meeting_participant_update": 2,
+    "connection_update": 2790
   },
-  "raw_count": 33,
-  "fetched_at": "2026-02-22T13:10:39.838355",
-  "time_gt": "2025-02-22T13:10:38.000Z",
+  "raw_count": 2842,
+  "fetched_at": "2026-02-22T16:29:40.977770",
+  "time_gt": "2024-02-23T13:09:13.000Z",
   "time_lt": null
 }

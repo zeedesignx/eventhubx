@@ -10,11 +10,12 @@
   "stats_exhibitor_views": 0,
   "stats_exhibitor_bookmarks": 0,
   "event_breakdown": {
-    "event_start": 1,
-    "event_show": 1
+    "event_start": 8,
+    "event_show": 10,
+    "event_view_show": 3
   },
-  "raw_count": 2,
-  "fetched_at": "2026-02-22T13:10:42.904231",
-  "time_gt": "2025-02-22T13:10:40.000Z",
+  "raw_count": 21,
+  "fetched_at": "2026-02-22T16:29:42.253824",
+  "time_gt": "2024-02-23T13:09:13.000Z",
   "time_lt": null
 }

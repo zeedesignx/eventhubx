@@ -723,6 +723,21 @@ async function loadEvents() {
 
                 // The 'data' column has the full Swapcard object
                 const ev = row.data || {};
+
+                // Inject persistent URLs from columns into the data object for rendering
+                if (row.banner_url) {
+                    if (!ev.banner) ev.banner = {};
+                    ev.banner.imageUrl = row.banner_url;
+                }
+                if (row.community_logo_url) {
+                    if (!ev.community) ev.community = {};
+                    ev.community.logoUrl = row.community_logo_url;
+                }
+                if (row.community_banner_url) {
+                    if (!ev.community) ev.community = {};
+                    ev.community.bannerImageUrl = row.community_banner_url;
+                }
+
                 grouped[cat].push(ev);
 
                 // Populate subpage stats from SEPARATE COLUMNS (new schema)

@@ -174,6 +174,14 @@ def _load_sync_settings():
         print(f"Error loading sync settings from Supabase: {e}")
     return {"disabled_communities": [], "disabled_events": [], "sync_interval_minutes": 60}
 
+def _get_persistent_url(new_url: str, existing_url: str) -> str:
+    """If the existing URL is a Supabase Storage URL, keep it unless new_url is significantly different (empty)."""
+    if not new_url:
+        return existing_url
+    if existing_url and "supabase.co/storage/v1/object/public/" in existing_url:
+        return existing_url
+    return new_url
+
 async def _sync_all_data_task(force_refresh: bool = False):
     """Performs a full sync of Swapcard events and saves to Supabase."""
     print(f"[{datetime.now().strftime('%H:%M:%S')}] [Sync] Starting events-only background sync...")
@@ -186,10 +194,11 @@ async def _sync_all_data_task(force_refresh: bool = False):
         result = get_events.get_events(settings=settings)
         events_by_cat = result.get("events", {})
 
-        # 2. Skip Subpages for now (Requested: "Concentrate only on the swap card events. Don't search subpages yet")
-        # print("[Sync] Skipping subpage data (per user request)...")
-        # _sync_subpages_to_supabase(all_events_flat, force_refresh=force_refresh)
-        
+        # 2. Fetch existing data to preserve Supabase URLs
+        print("[Sync] Fetching existing records for URL preservation...")
+        existing_res = supabase.table("swapcard_events").select("id, banner_url, community_logo_url, community_banner_url").execute()
+        existing_map = {r["id"]: r for r in (existing_res.data or [])}
+
         # 3. Upsert Events to Supabase
         print("[Sync] Upserting events to Supabase...")
 
@@ -199,6 +208,12 @@ async def _sync_all_data_task(force_refresh: bool = False):
 
                 # Calculate registrations from groups (available in event metadata)
                 registrations = sum(group.get("peopleCount", 0) for group in ev.get("groups", []))
+
+                # Preservation logic
+                ex_ev = existing_map.get(eid, {})
+                banner = _get_persistent_url((ev.get("banner") or {}).get("imageUrl"), ex_ev.get("banner_url"))
+                comm_logo = _get_persistent_url((ev.get("community") or {}).get("logoUrl"), ex_ev.get("community_logo_url"))
+                comm_banner = _get_persistent_url((ev.get("community") or {}).get("bannerImageUrl"), ex_ev.get("community_banner_url"))
 
                 # Prepare upsert data with metadata available from get_events
                 upsert_data = {
@@ -216,13 +231,13 @@ async def _sync_all_data_task(force_refresh: bool = False):
                     "members_count": 0, # Skip for now
                     "begins_at": ev.get("beginsAt"),
                     "ends_at": ev.get("endsAt"),
-                    "banner_url": (ev.get("banner") or {}).get("imageUrl"),
+                    "banner_url": banner,
                     "city": (ev.get("address") or {}).get("city"),
                     "country": (ev.get("address") or {}).get("country"),
                     "community_id": (ev.get("community") or {}).get("id"),
                     "community_name": (ev.get("community") or {}).get("name"),
-                    "community_logo_url": (ev.get("community") or {}).get("logoUrl"),
-                    "community_banner_url": (ev.get("community") or {}).get("bannerImageUrl"),
+                    "community_logo_url": comm_logo,
+                    "community_banner_url": comm_banner,
                     "is_live": ev.get("isLive", False),
                     "is_public": ev.get("isPublic", True),
                     "description_html": ev.get("htmlDescription")

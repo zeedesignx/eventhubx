@@ -209,7 +209,7 @@ document.addEventListener('click', (e) => {
  */
 function imgUrl(url) {
     if (!url) return '';
-    if (url.startsWith('/') || url.startsWith('data:')) return url;
+    if (url.startsWith('/') || url.startsWith('data:') || url.includes('supabase.co/storage')) return url;
 
     // Check Airtable cache first (app icons + tech logos)
     const cached = window.getCachedLogoUrl ? window.getCachedLogoUrl(url) : null;

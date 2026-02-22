@@ -16,6 +16,10 @@
         rel="stylesheet" />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Supabase Client Setup -->
+    <script src="/js/supabaseClient.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -168,9 +172,57 @@
                 <a href="#"
                     class="text-xs font-bold text-slate-400 hover:text-white transition-colors">Documentation</a>
                 <div class="h-4 w-px bg-border-dark"></div>
-                <button onclick="openLoginModal()"
+
+                <!-- Show when NOT logged in -->
+                <button id="sign-in-btn" onclick="openLoginModal()"
                     class="px-5 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-xs font-bold border border-white/5 transition-all">Sign
                     In</button>
+
+                <!-- Show when logged in -->
+                <div id="user-menu-container" class="hidden relative">
+                    <button id="header-user-btn" onclick="toggleHeaderUserMenu()"
+                        class="flex items-center gap-2 px-3 py-2 rounded-full bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur-sm transition-all border border-white/5 group">
+                        <div id="header-avatar"
+                            class="size-8 rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-primary/20 shrink-0">
+                        </div>
+                        <span id="header-username" class="text-xs font-semibold text-white"></span>
+                        <span class="material-symbols-outlined text-slate-500 group-hover:text-white transition-colors text-sm">expand_more</span>
+                    </button>
+
+                    <!-- User dropdown menu -->
+                    <div id="header-user-menu"
+                        class="hidden absolute top-full right-0 mt-2 w-64 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+                        <!-- Profile header -->
+                        <div class="flex items-center gap-3 p-4 border-b border-white/10">
+                            <div id="dropdown-avatar"
+                                class="size-10 rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-lg">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p id="dropdown-name" class="text-sm font-semibold text-white truncate"></p>
+                                <p id="dropdown-role" class="text-xs text-slate-400 truncate"></p>
+                            </div>
+                        </div>
+                        <!-- Menu items -->
+                        <div class="py-2">
+                            <button onclick="goToDashboard()"
+                                class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-all group">
+                                <span class="material-symbols-outlined text-[18px] text-slate-500 group-hover:text-primary transition-colors">dashboard</span>
+                                <span class="font-medium">Go to Dashboard</span>
+                            </button>
+                            <button onclick="openEditProfileFromLanding()"
+                                class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-all group">
+                                <span class="material-symbols-outlined text-[18px] text-slate-500 group-hover:text-primary transition-colors">manage_accounts</span>
+                                <span class="font-medium">Edit Profile</span>
+                            </button>
+                            <div class="h-px bg-white/10 mx-4 my-2"></div>
+                            <button onclick="logoutFromLanding()"
+                                class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all group rounded-b-2xl">
+                                <span class="material-symbols-outlined text-[18px] group-hover:text-red-400 transition-colors">logout</span>
+                                <span class="font-medium">Sign out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -606,12 +658,90 @@
     <script>
         // Check for existing session on load
         window.addEventListener('DOMContentLoaded', () => {
+            checkSessionAndUpdateUI();
+        });
+
+        function checkSessionAndUpdateUI() {
             const saved = sessionStorage.getItem('swapcard_user');
             if (saved) {
-                // Automatically redirect to dashboard if session exists
-                window.location.href = '/dashboard';
+                try {
+                    const user = JSON.parse(saved);
+                    showLoggedInUI(user);
+                } catch (e) {
+                    console.error('Error parsing user session:', e);
+                    showLoggedOutUI();
+                }
+            } else {
+                showLoggedOutUI();
+            }
+        }
+
+        function showLoggedInUI(user) {
+            // Hide sign-in button
+            document.getElementById('sign-in-btn').classList.add('hidden');
+
+            // Show user menu
+            const userMenuContainer = document.getElementById('user-menu-container');
+            userMenuContainer.classList.remove('hidden');
+
+            // Get initials from name
+            const initials = getInitials(user.name || user.username || 'User');
+
+            // Update all avatar and name fields
+            document.getElementById('header-avatar').textContent = initials;
+            document.getElementById('header-username').textContent = user.name || user.username;
+            document.getElementById('dropdown-avatar').textContent = initials;
+            document.getElementById('dropdown-name').textContent = user.name || user.username;
+            document.getElementById('dropdown-role').textContent = user.role || 'User';
+        }
+
+        function showLoggedOutUI() {
+            // Show sign-in button
+            document.getElementById('sign-in-btn').classList.remove('hidden');
+
+            // Hide user menu
+            document.getElementById('user-menu-container').classList.add('hidden');
+        }
+
+        function getInitials(name) {
+            if (!name) return 'U';
+            const parts = name.trim().split(' ');
+            if (parts.length >= 2) {
+                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            }
+            return name.substring(0, 2).toUpperCase();
+        }
+
+        function toggleHeaderUserMenu() {
+            const menu = document.getElementById('header-user-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const userMenuContainer = document.getElementById('user-menu-container');
+            const headerUserMenu = document.getElementById('header-user-menu');
+
+            if (userMenuContainer && !userMenuContainer.contains(e.target)) {
+                headerUserMenu.classList.add('hidden');
             }
         });
+
+        function goToDashboard() {
+            window.location.href = '/dashboard';
+        }
+
+        function openEditProfileFromLanding() {
+            // Redirect to dashboard with settings open
+            window.location.href = '/dashboard?action=edit-profile';
+        }
+
+        function logoutFromLanding() {
+            sessionStorage.removeItem('swapcard_user');
+            showLoggedOutUI();
+            // Close the dropdown
+            document.getElementById('header-user-menu').classList.add('hidden');
+        }
 
         function openLoginModal() {
             const modal = document.getElementById('login-modal');
