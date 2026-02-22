@@ -11,6 +11,8 @@ import mimetypes
 import httpx
 import uuid
 import base64
+from anthropic import AsyncAnthropic
+from sse_starlette.responses import EventSourceResponse
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from tools import get_airtable, get_events, get_subpages
