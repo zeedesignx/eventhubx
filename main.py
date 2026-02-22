@@ -12,15 +12,11 @@ import httpx
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from tools import get_airtable, get_events, get_subpages
-
-# Claude API imports
-from anthropic import AsyncAnthropic
-from sse_starlette.sse import EventSourceResponse
-import uuid
-import base64
-
 # Import Navigation layer
 import navigation
+
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(title="EventHubX API")
 
@@ -245,8 +241,12 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(application):
-    # Startup: preload all images and start sync loop
-    asyncio.create_task(_background_sync_loop())
+    # Startup: preload all images and start sync loop (only if NOT on Vercel)
+    if not os.environ.get("VERCEL"):
+        print("[Lifespan] Not on Vercel, starting background sync loop...")
+        asyncio.create_task(_background_sync_loop())
+    else:
+        print("[Lifespan] Running on Vercel, skipping background sync loop (managed by Cron).")
     yield
     # Shutdown: nothing to do
 
@@ -753,6 +753,22 @@ async def trigger_manual_sync(background_tasks: BackgroundTasks):
     """Triggers a full sync in the background with forced refresh from Swapcard."""
     background_tasks.add_task(_sync_all_data_task, force_refresh=True)
     return JSONResponse(content={"status": "success", "message": "Manual sync triggered in background."})
+
+@app.get("/api/cron/sync")
+async def cron_sync_task(request: Request, background_tasks: BackgroundTasks):
+    """Endpoint for Vercel Cron to trigger data sync."""
+    auth_header = request.headers.get("Authorization")
+    cron_secret = os.environ.get("CRON_SECRET")
+    
+    # Simple check for Cron secret if configured
+    if cron_secret and auth_header != f"Bearer {cron_secret}":
+        return JSONResponse({"status": "error", "message": "Unauthorized"}, status_code=401)
+        
+    print("[Cron] Synchronizing data...")
+    # For Vercel, we might want to wait for it since the process will die after the request
+    # but _sync_all_data_task is async, so we can just await it directly here.
+    await _sync_all_data_task(force_refresh=True)
+    return {"status": "success", "message": "Cron sync completed"}
 
 @app.get("/api/communities")
 async def get_communities():

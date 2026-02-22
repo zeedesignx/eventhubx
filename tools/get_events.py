@@ -3,22 +3,17 @@ import json
 import urllib.request
 import urllib.error
 
-def load_env():
-    env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-    try:
-        with open(env_path, 'r') as f:
-            for line in f:
-                if '=' in line:
-                    key, value = line.strip().split('=', 1)
-                    os.environ[key] = value
-    except FileNotFoundError:
-        pass
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 import datetime
 
 def _fetch_all_raw_events():
     """Internal helper to fetch all events from Swapcard API without any filtering."""
-    load_env()
+    # load_env removed as it's now global
     api_key = os.environ.get('SWAPCARD_API_KEY')
     if not api_key:
         raise ValueError("Missing API key")
@@ -91,7 +86,7 @@ def get_raw_events():
 
 def get_events(settings=None):
     """Returns filtered events based on settings (dict) or default hardcoded rules."""
-    load_env()
+    # load_env removed as it's now global
     events_list = _fetch_all_raw_events()
     
     # If settings not provided, try to load from local file (legacy)

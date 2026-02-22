@@ -8,16 +8,11 @@ EVENTS_TABLE_ID = 'tblFYq3SCOmVWIgxT'
 PORTFOLIO_FIELD_ID = 'fldrPay6wUdVz2dtM'
 EVENT_NAME_FIELD_ID = 'fldFvyGpbwQBdqRfB'
 
-def load_env():
-    env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-    try:
-        with open(env_path, 'r') as f:
-            for line in f:
-                if '=' in line:
-                    key, value = line.strip().split('=', 1)
-                    os.environ[key] = value
-    except FileNotFoundError:
-        pass
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 def _fetch_all(url_base, api_key):
     """Paginate through all records from an Airtable endpoint."""
@@ -62,7 +57,7 @@ def _build_techstack_lookup(api_key, base_id):
     return lookup
 
 def get_airtable_events():
-    load_env()
+    # load_env removed
     api_key = os.environ.get('AIRTABLE_API_KEY')
     base_id = os.environ.get('AIRTABLE_BASE_ID')
     table_id = os.environ.get('AIRTABLE_TABLE_ID')
@@ -160,7 +155,7 @@ def get_airtable_events():
 
 
 def get_portfolio_mapping():
-    load_env()
+    # load_env removed
     api_key = os.environ.get('AIRTABLE_API_KEY')
     base_id = os.environ.get('AIRTABLE_BASE_ID')
 
